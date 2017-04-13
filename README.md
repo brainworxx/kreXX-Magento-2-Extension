@@ -1,1 +1,0 @@
-# kreXX-Magento-2-Extension
