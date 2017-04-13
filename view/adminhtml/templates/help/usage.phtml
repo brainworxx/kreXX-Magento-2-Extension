@@ -32,89 +32,155 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 ?>
-<main class="page-content">
-    <h2>Usage</h2>
-    <p>
-        kreXX will be called in the PHP source code:<br/><br/>
+<div class="row">
+    <div class="col-m-12">
+        <h2>Usage</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        kreXX will be called in the PHP source code:
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
             <code>krexx($myObject);</code>
-        </span><br/><br/>
-    </p>
-    <p>
-        Most of the time you will use this method. kreXX will analyse the
-        $object
-        and give you detailed information about it:
-    </p>
-
-    <ul>
-        <li>Public attributes of the object</li>
-        <li>Protected attributes of the object (can be toggled)</li>
-        <li>Private attributes of the object (can be toggled)</li>
-        <li>Content of the traversable part of the object (can be toggled)</li>
-        <li>Result of all configured debugging callbacks (can be configured)
-        </li>
-    </ul>
-
-    <p>
-        In case the variable is not an object, it will simply display its
-        content.
-    </p>
-
-    <br/><hr/><br/>
-
-    <p>
-        Define a "moment" during a benchmark test. The $string should be
-        something meaningful, like "Model invoice db call":<br/><br/>
+        </span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        Most of the time you will use this method. kreXX will analyse the $object and give you detailed information about it:
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12 rule-tree-wrapper">
+        <div class="rule-tree">
+            <ul>
+                <li>Public attributes of the object</li>
+                <li>Protected attributes of the object (can be toggled)</li>
+                <li>Private attributes of the object (can be toggled)</li>
+                <li>Content of the traversable part of the object (can be toggled)</li>
+                <li>Result of all configured debugging callbacks (can be configured)
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        In case the variable is not an object, it will simply display its content.
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        <hr/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        Define a "moment" during a benchmark test. The $string should be something meaningful, like "Model invoice db call":
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
             <code>\Krexx::timerMoment($string);</code>
-        </span><br/><br/>
-    </p>
-
-
-
-    <p>
-        End the benchmark test and displays the result:<br/><br/>
+        </span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        End the benchmark test and displays the result:
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
             <code>\Krexx::timerEnd();</code>
         </span><br/><br/>
-    </p>
-
-    <br/><hr/><br/>
-
-    <p>
-        Outputs backtrace with sourcecode. When kreXX finds objects inside the
-        backtrace, it will analyse them:<br/><br/>
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        Outputs backtrace with sourcecode. When kreXX finds objects inside the backtrace, it will analyse them:
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+       <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
             <code>\Krexx::backtrace();</code>
-        </span><br/><br/>
-    </p>
-
-    <br/><hr/><br/>
-
-    <p>
-        Register the fatal error handler in the system, works only with PHP 5.x:<br/><br/>
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>\Krexx::registerFatal();</code>
-        </span><br/><br/>
-    </p>
-
-    <p>
-        Unregister the fatal error handler in the system, works only with PHP 5.x:<br/><br/>
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>\Krexx::unregisterFatal();</code>
-        </span><br/><br/>
-    </p>
-
-    <br/><hr/><br/>
-
-    <h2>kreXX on the web</h2>
-    <p>
-        <a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a><br/>
-        <a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a><br/>
-        <a target="_blank" href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento 1 kreXX extension</a><br/>
-        <a target="_blank" href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a><br/>
-        <a target="_blank" href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
-    </p>
-
-
-</main>
+        </span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>

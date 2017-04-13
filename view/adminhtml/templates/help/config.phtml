@@ -33,61 +33,104 @@
  */
 ?>
 
-<main class="page-content">
 
-    <h2>Configuration help</h2>
-
-    <p>
-        kreXX is already preconfigured, you don't have to cofigure it. But there
-        are always moments when you want to change it. There are 3 levels of
-        configuration:
-    </p>
-
-    <br/>
-
-    <p>
-        <b>1.) Factory settings</b><br/>
+<div class="row">
+    <div class="col-m-12">
+        <h2>Configuration help</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        kreXX is already preconfigured, you don't have to cofigure it. But there are always moments when you want to change it. There are 3 levels of configuration:
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        <b>1.) Factory settings</b>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         The factory settings are hardcoded fallback settings.
-    </p>
-
-    <br/>
-
-    <p>
-        <b>2.) Configuration file Krexx.ini</b><br/>
-        The configuration file settings are stored in the file Krexx.ini. kreXX
-        shows in it's output footer where it is searching for this
-        file.<br/><br/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        <b>2.) Configuration file Krexx.ini</b>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        The configuration file settings are stored in the file Krexx.ini. kreXX shows in it's output footer where it is searching for this file.
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
             <code><?php echo \Krexx::$pool->config->getPathToIniFile() ?></code>
-        </span><br/><br/>
-        You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a><br/>
+        </span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        You can edit these settings <a
+                href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
         Configuration file settings overwrite factory settings.
-    </p>
-
-    <br/>
-
-    <p>
-        <b>3.) Local browser settings</b><br/>
-        You can edit the local browser settings on the fly in the footer of the
-        kreXX output. They are stored in a cookie, and only affect your current
-        browser. Unlike the configuration file, not all settings can be edited
-        there.<br/>
-        Local browser settings overwrite configuration file settings.<br/>
-        You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a><br/>
-        <b>
-            Please note, that these are only local settings, only affecting your
-            current browser.
-        </b>
-    </p>
-
-
-    <br/><br/><br/>
-
-    <h2>kreXX on the web</h2>
-
-    <a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a><br/>
-    <a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a><br/>
-    <a target="_blank" href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento 1 kreXX extension</a><br/>
-    <a target="_blank" href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a><br/>
-    <a target="_blank" href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
-</main>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        <b>3.) Local browser settings</b>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        You can edit the local browser settings on the fly in the footer of the kreXX output. They are stored in a cookie, and only affect your current browser. Unlike the configuration file, not all settings can be edited there.
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        Local browser settings overwrite configuration file settings.
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        You can edit these settings <a
+                href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-m-12">
+        Please note, that these are only local settings, only affecting your
+        current browser.
+    </div>
+</div>

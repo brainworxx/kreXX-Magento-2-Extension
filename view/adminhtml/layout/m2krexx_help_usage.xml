@@ -3,7 +3,8 @@
     <update handle="styles"/>
     <body>
         <referenceContainer name="content">
-            <block class="Brainworxx\M2krexx\Block\Adminhtml\Help\Usage" name="m2krexx_help_usage" template="Brainworxx_M2krexx::help/usage.phtml" />
+            <block class="Magento\Backend\Block\Template" name="m2krexx_help_usage" template="Brainworxx_M2krexx::help/usage.phtml" />
+            <block class="Magento\Backend\Block\Template" name="m2krexx_help_links" template="Brainworxx_M2krexx::links.phtml" />
         </referenceContainer>
     </body>
 </page>
