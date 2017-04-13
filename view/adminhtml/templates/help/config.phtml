@@ -31,53 +31,63 @@
  *   along with this library; if not, write to the Free Software Foundation,
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-$linkToCookieEdit = 'www.google.com';
 ?>
-<h2>Configuration help</h2>
+
+<main class="page-content">
+
+    <h2>Configuration help</h2>
+
+    <p>
+        kreXX is already preconfigured, you don't have to cofigure it. But there
+        are always moments when you want to change it. There are 3 levels of
+        configuration:
+    </p>
+
+    <br/>
+
+    <p>
+        <b>1.) Factory settings</b><br/>
+        The factory settings are hardcoded fallback settings.
+    </p>
+
+    <br/>
+
+    <p>
+        <b>2.) Configuration file Krexx.ini</b><br/>
+        The configuration file settings are stored in the file Krexx.ini. kreXX
+        shows in it's output footer where it is searching for this
+        file.<br/><br/>
+        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+            <code><?php echo \Krexx::$pool->config->getPathToIniFile() ?></code>
+        </span><br/><br/>
+        You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a><br/>
+        Configuration file settings overwrite factory settings.
+    </p>
+
+    <br/>
+
+    <p>
+        <b>3.) Local browser settings</b><br/>
+        You can edit the local browser settings on the fly in the footer of the
+        kreXX output. They are stored in a cookie, and only affect your current
+        browser. Unlike the configuration file, not all settings can be edited
+        there.<br/>
+        Local browser settings overwrite configuration file settings.<br/>
+        You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a><br/>
+        <b>
+            Please note, that these are only local settings, only affecting your
+            current browser.
+        </b>
+    </p>
 
 
-<p>
-    kreXX is already preconfigured, you don't have to cofigure it. But there are
-    always moments when you want to change it. There are 3 levels of configuration:
-</p>
-<br/>
-<p>
-    <b>1.) Factory settings</b><br/>
-    The factory settings are hardcoded fallback settings.
-</p>
-<br/>
-<p>
-    <b>2.) Configuration file Krexx.ini</b><br/>
-    The configuration file settings are stored in the file Krexx.ini. kreXX
-    shows in it's output footer where it is searching for this file.<br /><br />
-    <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-        <code><?php echo \Krexx::$pool->config->getPathToIniFile() ?></code>
-    </span><br /><br />
-    You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a><br/>
-    Configuration file settings overwrite factory settings.
-</p>
-<br/>
-<p>
-    <b>3.) Local browser settings</b><br/>
-    You can edit the local browser settings on the fly in the footer of the
-    kreXX output. They are stored in a cookie, and only affect your current
-    browser. Unlike the configuration file, not all settings can be edited there.<br/>
-    Local browser settings overwrite configuration file settings.<br/>
-    You can edit these settings <a href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a><br/>
-    <b>Please note, that these are only local settings, only affecting your current browser.</b>
-</p>
+    <br/><br/><br/>
 
+    <h2>kreXX on the web</h2>
 
-<br/><br/><br/>
-
-<h2>kreXX on the web</h2>
-
-<a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a><br/>
-<a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a><br/>
-<a target="_blank" href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento kreXX extension</a><br/>
-<a target="_blank" href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a><br/>
-<a target="_blank" href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
-
-
-
+    <a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a><br/>
+    <a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a><br/>
+    <a target="_blank" href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento 1 kreXX extension</a><br/>
+    <a target="_blank" href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a><br/>
+    <a target="_blank" href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
+</main>
