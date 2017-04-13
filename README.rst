@@ -6,4 +6,4 @@ kreXX Debugger - Magento 2 Backend Extension
 
 Current status: unfinished experimental.
 
-Do **not** use in production!
+Do **not** use in production (or anywhere else)!
