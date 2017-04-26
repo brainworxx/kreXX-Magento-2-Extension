@@ -57,6 +57,13 @@ class Index extends Action
     {
         $this->resultPageFactory = $resultPageFactory;
         parent::__construct($context);
+
+        // Has kreXX something to say? Maybe a writeprotected logfolder?
+        // We are only facing error messages here, normally.
+        $messages = strip_tags(\Krexx::$pool->messages->outputMessages());
+        if (!empty($messages)) {
+            $this->messageManager->addError($messages);
+        }
     }
 
     /**
