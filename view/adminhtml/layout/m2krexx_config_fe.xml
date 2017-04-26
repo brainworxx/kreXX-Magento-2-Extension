@@ -3,8 +3,11 @@
     <update handle="styles"/>
     <body>
         <referenceContainer name="content">
-            <block class="Brainworxx\M2krexx\Block\Adminhtml\Config\Fe" name="m2krexx_config_fe" template="Brainworxx_M2krexx::config/fe.phtml" />
-            <block class="Magento\Backend\Block\Template" name="m2krexx_help_links" template="Brainworxx_M2krexx::links.phtml" />
+            <block class="Brainworxx\M2krexx\Block\Adminhtml\Config\Fe" name="m2krexx_config_fe" template="Brainworxx_M2krexx::config/fe.phtml" >
+                <block class="Magento\Backend\Block\Template" name="m2krexx_help_usage" template="Brainworxx_M2krexx::help/usage.phtml" />
+                <block class="Magento\Backend\Block\Template" name="m2krexx_help_config" template="Brainworxx_M2krexx::help/config.phtml" />
+                <block class="Magento\Backend\Block\Template" name="m2krexx_help_links" template="Brainworxx_M2krexx::help/links.phtml" />
+            </block>
         </referenceContainer>
     </body>
 </page>
