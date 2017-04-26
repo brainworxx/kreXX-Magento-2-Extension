@@ -31,5 +31,68 @@
  *   along with this library; if not, write to the Free Software Foundation,
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
+\Krexx::editSettings();
 ?>
-<h1>Edit cookies goes here!</h1>
+
+<div class="row">
+    <div class="col-m-12">
+        <h2>Edit local browser settings</h2>
+    </div>
+</div>
+<?php if (\Krexx::$pool->config->getSetting('disabled')) { ?>
+
+    <div class="row">
+        <div class="col-m-12">
+            Normally, we would display the menu for the local browser settings here.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-m-12">
+            The output of kreXX was <b>disabled</b>, so it will not be displayed.
+        </div>
+    </div>
+
+<?php } else { ?>
+    <?php if (\Krexx::$pool->config->getSetting('destination') == 'file') { ?>
+        <div class="row">
+            <div class="col-m-12">
+                Normally, we would display the menu for the local browser settings here.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-m-12">
+                The output of kreXX is switched to <b>file</b>, so it will not be displayed.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-m-12">
+                The logfile access can be found <a href="<?php echo $this->getUrl('m2krexx/logging/index') ?>">here</a>.
+            </div>
+        </div>
+
+
+    <?php } else { ?>
+
+        <div class="row">
+            <div class="col-m-12">
+                Here you can edit the local browser settings. They are stored in a cookie, and only affect your current browser. Unlike the configuration file, not all settings can be edited here by default.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-m-12">
+                This can be changed <a href="<?php echo $this->getUrl('m2krexx/config/fe') ?>">here</a>. Local browser settings overwrite configuration file settings.
+            </div>
+        </div>
+        <br/><br/>
+        <b>Please note, that these settings only affect your current browser!</b>
+    <?php } ?>
+<?php } ?>
+<br /><br /><br /><br /><br /><br />
+<hr />
+
+<div class="accordion">
+    <?php echo $this->getChildHtml('m2krexx_help_usage') ?>
+    <?php echo $this->getChildHtml('m2krexx_help_config') ?>
+    <?php echo $this->getChildHtml('m2krexx_help_links') ?>
+</div>

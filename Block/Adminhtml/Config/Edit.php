@@ -32,11 +32,16 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\M2krexx\Block\Adminhtml\Help;
+namespace Brainworxx\M2krexx\Block\Adminhtml\Config;
 
 use Magento\Backend\Block\Template;
 
-class Usage extends Template
+/**
+ * Add the form data for the cofig file editor to the template.
+ *
+ * @package Brainworxx\M2krexx\Block\Adminhtml\Config
+ */
+class Edit extends Template
 {
-    // Do nothing (for now).
+
 }

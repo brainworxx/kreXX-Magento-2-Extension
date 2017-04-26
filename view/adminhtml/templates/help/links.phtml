@@ -33,51 +33,54 @@
  */
 ?>
 
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <hr/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <h2>kreXX on the web</h2>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a><br/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a><br/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <a target="_blank"
-           href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento 1 kreXX extension</a><br/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <a target="_blank"
-           href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a><br/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <a target="_blank"
-           href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
+<div class="section-config">
+    <div class="entry-edit form-inline">
+        <div id="krexx-links-section" class="section-config">
+            <div class="entry-edit-head admin__collapsible-block">
+                <span id="krexx-links-link" class="entry-edit-head-link"></span>
+                <a id="krexx-links-head" href="#">kreXX on the web</a>
+            </div>
+            <fieldset class="config admin__collapsible-block" id="krexx-links">
+                <div class="row">
+                    <div class="col-m-12">
+                        <a target="_blank" href="https://docs.typo3.org/typo3cms/extensions/includekrexx/">Documentation</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <a target="_blank" href="https://github.com/brainworxx/kreXX/issues">Bug reports for kreXX</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <a target="_blank" href="https://github.com/brainworxx/kreXX-Magento-1-Extension/issues">Bug reports for the Magento 1 kreXX extension</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <a target="_blank" href="https://typo3.org/extensions/repository/view/includekrexx">TYPO3 kreXX</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <a target="_blank" href="https://www.magentocommerce.com/magento-connect/krexx-debugger.html">Magento 1 kreXX</a>
+                    </div>
+                </div>
+            </fieldset>
+            <script type="text/javascript">
+                //<![CDATA[
+                require(['jquery'], function ($) {
+                    var $linkHead = $('#krexx-links-head');
+                    var $linkPayload = $('#krexx-links');
+                    var $linkSection = $('#krexx-links-section');
+
+                    $linkHead.on('click', function () {
+                        $linkPayload.toggle();
+                        $linkSection.toggleClass('active');
+                    })
+                });
+                //]]>
+            </script>
+        </div>
     </div>
 </div>

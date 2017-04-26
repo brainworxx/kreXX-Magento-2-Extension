@@ -7,8 +7,6 @@
         <add id="Brainworxx_M2krexx::config_fe"      title="Edit FE config"          module="Brainworxx_M2krexx" sortOrder="20"  parent="Brainworxx_M2krexx::krexx_debugger" resource="Brainworxx_M2krexx::configure" action="m2krexx/config/fe"/>
         <add id="Brainworxx_M2krexx::log_access"     title="Logfile access"          module="Brainworxx_M2krexx" sortOrder="30"  parent="Brainworxx_M2krexx::krexx_debugger" resource="Brainworxx_M2krexx::configure" action="m2krexx/logging"/>
         <add id="Brainworxx_M2krexx::cookies"        title="Edit local cookies"      module="Brainworxx_M2krexx" sortOrder="40"  parent="Brainworxx_M2krexx::krexx_debugger" resource="Brainworxx_M2krexx::configure" action="m2krexx/cookies"/>
-        <add id="Brainworxx_M2krexx::help_usage"     title="Usage help"              module="Brainworxx_M2krexx" sortOrder="50"  parent="Brainworxx_M2krexx::krexx_debugger" resource="Brainworxx_M2krexx::configure" action="m2krexx/help/usage"/>
-        <add id="Brainworxx_M2krexx::help_config"    title="Config help"             module="Brainworxx_M2krexx" sortOrder="60"  parent="Brainworxx_M2krexx::krexx_debugger" resource="Brainworxx_M2krexx::configure" action="m2krexx/help/config"/>
     </menu>
 </config>
 

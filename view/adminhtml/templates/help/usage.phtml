@@ -32,155 +32,185 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 ?>
-<div class="row">
-    <div class="col-m-12">
-        <h2>Usage</h2>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        kreXX will be called in the PHP source code:
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>krexx($myObject);</code>
-        </span>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Most of the time you will use this method. kreXX will analyse the $object and give you detailed information about it:
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12 rule-tree-wrapper">
-        <div class="rule-tree">
-            <ul>
-                <li>Public attributes of the object</li>
-                <li>Protected attributes of the object (can be toggled)</li>
-                <li>Private attributes of the object (can be toggled)</li>
-                <li>Content of the traversable part of the object (can be toggled)</li>
-                <li>Result of all configured debugging callbacks (can be configured)
-                </li>
-            </ul>
+<div class="section-config">
+    <div class="entry-edit form-inline">
+        <div id="krexx-usagehelp-section" class="section-config">
+            <div class="entry-edit-head admin__collapsible-block">
+                <span id="krexx-usagehelp-link" class="entry-edit-head-link"></span>
+                <a id="krexx-usagehelp-head" href="#">Usage help</a>
+            </div>
+            <fieldset class="config admin__collapsible-block"
+                      id="krexx-usagehelp">
+                <div class="row">
+                    <div class="col-m-12">
+                        kreXX will be called in the PHP source code:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+                            <code>krexx($myObject);</code>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Most of the time you will use this method. kreXX will
+                        analyse the $object and give you detailed information
+                        about it:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12 rule-tree-wrapper">
+                        <div class="rule-tree">
+                            <ul>
+                                <li>Public attributes of the object</li>
+                                <li>Protected attributes of the object (can be
+                                    toggled)
+                                </li>
+                                <li>Private attributes of the object (can be
+                                    toggled)
+                                </li>
+                                <li>Content of the traversable part of the
+                                    object (can be toggled)
+                                </li>
+                                <li>Result of all configured debugging callbacks
+                                    (can be configured)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        In case the variable is not an object, it will simply
+                        display its content.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <hr/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Define a "moment" during a benchmark test. The $string
+                        should be something meaningful, like "Model invoice db
+                        call":
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+                            <code>\Krexx::timerMoment($string);</code>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        End the benchmark test and displays the result:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+                            <code>\Krexx::timerEnd();</code>
+                        </span><br/><br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <hr/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Outputs backtrace with sourcecode. When kreXX finds
+                        objects inside the backtrace, it will analyse them:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+                            <code>\Krexx::backtrace();</code>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+            <script type="text/javascript">
+                //<![CDATA[
+                require(['jquery'], function ($) {
+                    var $linkHead = $('#krexx-usagehelp-head');
+                    var $linkPayload = $('#krexx-usagehelp');
+                    var $linkSection = $('#krexx-usagehelp-section');
+
+                    $linkHead.on('click', function () {
+                        $linkPayload.toggle();
+                        $linkSection.toggleClass('active');
+                    })
+                });
+                //]]>
+            </script>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        In case the variable is not an object, it will simply display its content.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <hr/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Define a "moment" during a benchmark test. The $string should be something meaningful, like "Model invoice db call":
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>\Krexx::timerMoment($string);</code>
-        </span>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        End the benchmark test and displays the result:
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>\Krexx::timerEnd();</code>
-        </span><br/><br/>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <hr />
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Outputs backtrace with sourcecode. When kreXX finds objects inside the backtrace, it will analyse them:
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-       <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code>\Krexx::backtrace();</code>
-        </span>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
     </div>
 </div>

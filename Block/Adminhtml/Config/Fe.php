@@ -32,17 +32,16 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\M2krexx\Block\Adminhtml\Help;
+namespace Brainworxx\M2krexx\Block\Adminhtml\Config;
 
 use Magento\Backend\Block\Template;
 
-class Config extends Template
+/**
+ * Add the form data for the cofig file editor to the template.
+ *
+ * @package Brainworxx\M2krexx\Block\Adminhtml\Config
+ */
+class Fe extends Template
 {
-     /**
-     * Generates a backend link to the kreXX configurtation page.
-     */
-    public function generateLinkToConfig()
-    {
-        return $this->getUrl('m2krexx/config/edit');
-    }
+
 }

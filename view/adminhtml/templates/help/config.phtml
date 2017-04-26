@@ -34,103 +34,135 @@
 ?>
 
 
-<div class="row">
-    <div class="col-m-12">
-        <h2>Configuration help</h2>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        kreXX is already preconfigured, you don't have to cofigure it. But there are always moments when you want to change it. There are 3 levels of configuration:
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <b>1.) Factory settings</b>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        The factory settings are hardcoded fallback settings.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <b>2.) Configuration file Krexx.ini</b>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        The configuration file settings are stored in the file Krexx.ini. kreXX shows in it's output footer where it is searching for this file.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
-            <code><?php echo \Krexx::$pool->config->getPathToIniFile() ?></code>
-        </span>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        You can edit these settings <a
-                href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Configuration file settings overwrite factory settings.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        &nbsp;
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        <b>3.) Local browser settings</b>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        You can edit the local browser settings on the fly in the footer of the kreXX output. They are stored in a cookie, and only affect your current browser. Unlike the configuration file, not all settings can be edited there.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Local browser settings overwrite configuration file settings.
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        You can edit these settings <a
-                href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col-m-12">
-        Please note, that these are only local settings, only affecting your
-        current browser.
+<div class="section-config">
+    <div class="entry-edit form-inline">
+        <div id="krexx-confighelp-section" class="section-config">
+            <div class="entry-edit-head admin__collapsible-block">
+                <span id="krexx-confighelp-link" class="entry-edit-head-link"></span>
+                <a id="krexx-confighelp-head" href="#">Configuration help</a>
+            </div>
+            <fieldset class="config admin__collapsible-block"
+                      id="krexx-confighelp">
+                <div class="row">
+                    <div class="col-m-12">
+                        kreXX is already preconfigured, you don't have to
+                        cofigure it. But there are always moments when you want
+                        to change it. There are 3 levels of configuration:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <b>1.) Factory settings</b>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        The factory settings are hardcoded fallback settings.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <b>2.) Configuration file Krexx.ini</b>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        The configuration file settings are stored in the file
+                        Krexx.ini. kreXX shows in it's output footer where it is
+                        searching for this file.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <span style="background-color: #efefef; border: 1px solid #d8d8d8; margin: -1px 0 0; padding: 10px 10px 10px 26px;">
+                            <code><?php echo \Krexx::$pool->config->getPathToIniFile() ?></code>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        You can edit these settings <a
+                                href="<?php echo $this->getUrl('m2krexx/config/edit') ?>">here.</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Configuration file settings overwrite factory settings.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        <b>3.) Local browser settings</b>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        You can edit the local browser settings on the fly in
+                        the footer of the kreXX output. They are stored in a
+                        cookie, and only affect your current browser. Unlike the
+                        configuration file, not all settings can be edited
+                        there.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Local browser settings overwrite configuration file
+                        settings.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        You can edit these settings <a
+                                href="<?php echo $this->getUrl('m2krexx/cookies') ?>">here.</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-m-12">
+                        Please note, that these are only local settings, only
+                        affecting your
+                        current browser.
+                    </div>
+                </div>
+            </fieldset>
+            <script type="text/javascript">
+                //<![CDATA[
+                require(['jquery'], function ($) {
+                    var $linkHead = $('#krexx-confighelp-head');
+                    var $linkPayload = $('#krexx-confighelp');
+                    var $linkSection = $('#krexx-confighelp-section');
+
+                    $linkHead.on('click', function () {
+                        $linkPayload.toggle();
+                        $linkSection.toggleClass('active');
+                    })
+                });
+                //]]>
+            </script>
+        </div>
     </div>
 </div>
