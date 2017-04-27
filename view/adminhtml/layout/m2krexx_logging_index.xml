@@ -1,8 +1,14 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Brainworxx_M2krexx::css/styles.css"/>
+    </head>
+
     <update handle="styles"/>
+
     <body>
         <referenceContainer name="content">
+            <uiComponent name="m2krexx_logging"/>
             <block class="Brainworxx\M2krexx\Block\Adminhtml\Logging\Index" name="m2krexx_logging_index" template="Brainworxx_M2krexx::logging/index.phtml" >
                 <block class="Magento\Backend\Block\Template" name="m2krexx_help_usage" template="Brainworxx_M2krexx::help/usage.phtml" />
                 <block class="Magento\Backend\Block\Template" name="m2krexx_help_config" template="Brainworxx_M2krexx::help/config.phtml" />

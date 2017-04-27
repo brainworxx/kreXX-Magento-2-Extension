@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Brainworxx_M2krexx::css/styles.css"/>
+    </head>
+
     <update handle="styles"/>
+
     <body>
         <referenceContainer name="content">
             <block class="Brainworxx\M2krexx\Block\Adminhtml\Config\Fe" name="m2krexx_config_fe" template="Brainworxx_M2krexx::config/fe.phtml" >

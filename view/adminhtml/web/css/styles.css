@@ -1,0 +1,10 @@
+.admin__data-grid-pager-wrap {
+    float: none;
+}
+
+.help_source {
+    background-color: #efefef;
+    border: 1px solid #d8d8d8;
+    margin: -1px 0 0;
+    padding: 10px 10px 10px 26px;
+}

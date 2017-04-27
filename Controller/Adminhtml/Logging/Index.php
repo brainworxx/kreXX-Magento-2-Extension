@@ -40,6 +40,11 @@ use Magento\Backend\App\Action;
 
 class Index extends Action
 {
+    /**
+     * page factory reference
+     *
+     * @var PageFactory
+     */
     protected $resultPageFactory;
 
     /**
@@ -51,7 +56,7 @@ class Index extends Action
      * Constructor
      *
      * @param \Magento\Framework\App\Action\Context  $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param PageFactory $resultPageFactory
      */
     public function __construct(Context $context, PageFactory $resultPageFactory)
     {
@@ -73,6 +78,18 @@ class Index extends Action
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        $pageResult = $this->resultPageFactory->create();
+        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
+        $pageResult->getConfig()->getTitle()->prepend('Logfile access');
+        $this->_setActiveMenu('Your menu id here') //can skip this
+            ->_addBreadcrumb(
+                'kreXX Debugger',
+                'kreXX Debugger'
+            )->_addBreadcrumb(
+                'Logfile access',
+                'Logfile access'
+            );
+        return $pageResult;
+
     }
 }
