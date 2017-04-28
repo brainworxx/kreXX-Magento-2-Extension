@@ -67,7 +67,9 @@ class Collection extends Filesystem
             // Set the logdir, which is configured in kreXX
             ->addTargetDir($logDirectory)
             // Set filter to all files ending with .Krexx.html
-            ->setFilesFilter('/.*\.Krexx\.html$/');
+            ->setFilesFilter('/.*\.Krexx\.html$/')
+            // Sort the files by timestamp.
+            ->setOrder('timestamp');
     }
 
     /**

@@ -165,8 +165,9 @@
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="align" xsi:type="string">left</item>
-                    <item name="label" xsi:type="string" translate="true">Analysis of</item>
+                    <item name="label" xsi:type="string" translate="true">Type</item>
                     <item name="sortOrder" xsi:type="number">5</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                 </item>
             </argument>
         </column>
@@ -181,6 +182,7 @@
                     <item name="align" xsi:type="string">left</item>
                     <item name="label" xsi:type="string" translate="true">Called in</item>
                     <item name="sortOrder" xsi:type="number">6</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                 </item>
             </argument>
         </column>

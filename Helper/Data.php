@@ -35,25 +35,11 @@
 namespace Brainworxx\M2krexx\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Escaper;
+use Magento\Framework\Filesystem\Io\File;
 
 class Data extends AbstractHelper
 {
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * @param Context $context
-     */
-    public function __construct(Context $context, \Magento\Framework\ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-
-        parent::__construct($context);
-    }
 
     /**
      * Generates the rows for the admin grid, used to access the logfiles.
@@ -64,36 +50,42 @@ class Data extends AbstractHelper
      */
     public function generateRow(array $row)
     {
-        // @todo: Add the following to the data
-        // [id] from the filename (14926070945794300)
-        // [filename] alias basename
-        // [date] from the file (last modified)
-        // [size] from the file
-        // [meta_analysis_of] 'Analysis of ...'
-        // [meta_called_in] 'Called in' (file and line)
+        $timestamp = filemtime($row['filename']);
+        $filesize = $this->fileSizeConvert(filesize($row['filename']));
 
         $result = array(
             'id' => (int)str_replace('.Krexx.html', '', $row['basename']),
             'filename' => $row['basename'],
-            'date' => date("d.m.y H:i:s", filemtime($row['filename'])),
-            'size' => $this->fileSizeConvert(filesize($row['filename'])),
-            'meta_analysis_of' => 'todo',
-            'meta_called_in' => 'todo',
+            'timestamp' => $timestamp,
+            'date' => date("d.m.y H:i:s", $timestamp),
+            'size' => $filesize,
+            'meta_analysis_of' => '',
+            'meta_called_in' => '',
         );
 
-        // Parsing a potentialls 80MB file for it's content is not a good idea.
-        // That is why the kreXX lib provides some meta data. We will open
+        // Parsing a potentially 80MB file for it's content is not a good idea.
+        // That is why the kreXX lib provides a meta data file. We will open
         // this file and add it's content to the template.
         if (is_readable($row['filename'] . '.json')) {
-            /** @var \Magento\Framework\Filesystem\Io\File $ioFile */
-            $ioFile = $this->objectManager->get(\Magento\Framework\Filesystem\Io\File::class);
-            $fileinfo['meta'] = json_decode($ioFile->read($row['filename'] . '.json'), true);
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            /** @var File $ioFile */
+            $ioFile = $objectManager->get(File::class);
+            /** @var Escaper $escaper */
+            $escaper = $objectManager->create(Escaper::class);
 
+            $fileinfo['meta'] = json_decode($ioFile->read($row['filename'] . '.json'), true);
             foreach ($fileinfo['meta'] as &$meta) {
-                $meta['filename'] = basename($meta['file']);
+                $result['meta_called_in'] .= $escaper->escapeHtml(basename($meta['file'])) .
+                    ' in line <b>' .  $escaper->escapeHtml($meta['line']) . '</b><hr/>';
+
+                $result['meta_analysis_of'] .= $escaper->escapeHtml($meta['type']) .
+                    ': <b>' . $escaper->escapeHtml($meta['varname']) . '</b><hr/>';
             }
+
+            $result['meta_called_in'] = substr($result['meta_called_in'], 0, -3);
+            $result['meta_analysis_of'] = substr($result['meta_analysis_of'], 0, -3);
         }
-//        krexx($fileinfo);
+
 
         return $result;
     }
