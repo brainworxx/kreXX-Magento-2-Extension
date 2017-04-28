@@ -37,6 +37,7 @@ namespace Brainworxx\M2krexx\Controller\Adminhtml\Config;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\ObjectManager;
 
 class Fe extends Action
 {
@@ -51,11 +52,10 @@ class Fe extends Action
      * Constructor
      *
      * @param \Magento\Framework\App\Action\Context  $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory)
+    public function __construct(Context $context)
     {
-        $this->resultPageFactory = $resultPageFactory;
+        $this->resultPageFactory = ObjectManager::getInstance()->get(PageFactory::class);
         parent::__construct($context);
 
         // Has kreXX something to say? Maybe a writeprotected logfolder?

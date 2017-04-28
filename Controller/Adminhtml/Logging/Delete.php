@@ -32,47 +32,79 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\M2krexx\Controller\Adminhtml\Config;
+namespace Brainworxx\M2krexx\Controller\Adminhtml\Logging;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\UrlInterface;
 
-class Edit extends Action
+class Delete extends Action
 {
-    protected $resultPageFactory;
+    /**
+     * The page factory.
+     *
+     * @var Redirect
+     */
+    protected $resultRedirect;
 
     /**
-     * Authorization level of a basic admin session
+     * @var File
      */
-    const ADMIN_RESOURCE = 'Brainworxx_M2krexx::configure';
+    protected $ioFile;
+
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
 
     /**
      * Constructor
      *
-     * @param \Magento\Framework\App\Action\Context  $context
+     * @param \Magento\Framework\App\Action\Context $context
      */
     public function __construct(Context $context)
     {
-        $this->resultPageFactory = ObjectManager::getInstance()->get(PageFactory::class);
+        $objectManager = ObjectManager::getInstance();
+
+        $this->resultRedirect = $objectManager->get(Redirect::class);
+        $this->ioFile = $objectManager->get(File::class);
+        $this->urlBuilder = $objectManager->get(UrlInterface::class);
+
         parent::__construct($context);
 
-        // Has kreXX something to say? Maybe a writeprotected logfolder?
-        // We are only facing error messages here, normally.
-        $messages = strip_tags(\Krexx::$pool->messages->outputMessages());
-        if (!empty($messages)) {
-            $this->messageManager->addError($messages);
-        }
     }
 
     /**
-     * Execute view action
+     * Delete the files with the id, set the success message and return to the
+     * log overview.
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        // Sanitize the id.
+        $id = preg_replace('/[^0-9]/', '', $this->getRequest()->getParam('id'));
+        // Get the filepath.
+        $file = \Krexx::$pool->config->getLogDir() . $id . '.Krexx';
+
+        if ($this->ioFile->rm($file . '.html') && $this->ioFile->rm($file . '.html.json')) {
+            // Logfiles were sucessully deleted!
+            $this->messageManager->addSuccess('Deleted logfile id: ' . $id);
+        } else {
+            // Failed to delete at least one file!
+            $this->messageManager->addError('Failed to delete logfile id: ' . $id . '!');
+        }
+
+        krexx($this->resultRedirect);
+
+        // Set the redirect url.
+        $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/logging/index'));
+
+        // Return the redirect.
+        return $this->resultRedirect;
+
     }
 }

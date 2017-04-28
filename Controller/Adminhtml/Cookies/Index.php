@@ -37,6 +37,7 @@ namespace Brainworxx\M2krexx\Controller\Adminhtml\Cookies;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
+use Magento\Framework\App\ObjectManager;
 
 class Index extends Action
 {
@@ -51,11 +52,10 @@ class Index extends Action
      * Constructor
      *
      * @param \Magento\Framework\App\Action\Context  $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory)
+    public function __construct(Context $context)
     {
-        $this->resultPageFactory = $resultPageFactory;
+        $this->resultPageFactory = ObjectManager::getInstance()->get(PageFactory::class);
         parent::__construct($context);
 
         // Has kreXX something to say? Maybe a writeprotected logfolder?
@@ -73,6 +73,17 @@ class Index extends Action
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        $pageResult = $this->resultPageFactory->create();
+        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
+        $pageResult->getConfig()->getTitle()->prepend('Edit local browser settings');
+        $this->_setActiveMenu('Your menu id here') //can skip this
+            ->_addBreadcrumb(
+                'kreXX Debugger',
+                'kreXX Debugger'
+            )->_addBreadcrumb(
+                'Edit local browser settings',
+                'Edit local browser settings'
+            );
+        return $pageResult;
     }
 }

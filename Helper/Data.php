@@ -37,6 +37,7 @@ namespace Brainworxx\M2krexx\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Escaper;
 use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\App\ObjectManager;
 
 class Data extends AbstractHelper
 {
@@ -67,7 +68,7 @@ class Data extends AbstractHelper
         // That is why the kreXX lib provides a meta data file. We will open
         // this file and add it's content to the template.
         if (is_readable($row['filename'] . '.json')) {
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $objectManager = ObjectManager::getInstance();
             /** @var File $ioFile */
             $ioFile = $objectManager->get(File::class);
             /** @var Escaper $escaper */

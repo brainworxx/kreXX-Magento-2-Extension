@@ -36,6 +36,7 @@ namespace Brainworxx\M2krexx\Ui\DataProvider;
 
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Brainworxx\M2krexx\Model\Logging\CollectionFactory;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Class ProductDataProvider
@@ -65,7 +66,6 @@ class LoggingDataProvider extends AbstractDataProvider
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
-     * @param CollectionFactory $collectionFactory
      * @param array $meta
      * @param array $data
      */
@@ -73,12 +73,11 @@ class LoggingDataProvider extends AbstractDataProvider
         $name,
         $primaryFieldName,
         $requestFieldName,
-        CollectionFactory $collectionFactory,
         array $meta = [],
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->collection = $collectionFactory->create();
+        $this->collection = ObjectManager::getInstance()->get(CollectionFactory::class)->create();
     }
 
     /**

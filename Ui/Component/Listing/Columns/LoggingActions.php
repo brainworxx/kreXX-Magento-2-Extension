@@ -34,12 +34,12 @@
 
 namespace Brainworxx\M2krexx\Ui\Component\Listing\Columns;
 
-use Magento\Framework\Filesystem;
+
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ObjectManager;
 
 class LoggingActions extends Column
 {
@@ -51,18 +51,16 @@ class LoggingActions extends Column
     /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param UrlInterface $urlBuilder
      * @param array $components
      * @param array $data
      */
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        UrlInterface $urlBuilder,
         array $components = [],
         array $data = []
     ) {
-        $this->urlBuilder = $urlBuilder;
+        $this->urlBuilder = ObjectManager::getInstance()->get(UrlInterface::class);
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 

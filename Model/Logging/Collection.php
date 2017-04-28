@@ -37,6 +37,7 @@ namespace Brainworxx\M2krexx\Model\Logging;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Brainworxx\M2krexx\Helper\Data;
 use Magento\Framework\Data\Collection\Filesystem;
+use Magento\Framework\App\ObjectManager;
 
 class Collection extends Filesystem
 {
@@ -52,17 +53,16 @@ class Collection extends Filesystem
      */
     protected $helper;
 
-    public function __construct(EntityFactoryInterface $entityFactory, Data $helper)
+    public function __construct(EntityFactoryInterface $entityFactory)
     {
-        $this->helper = $helper;
+        $this->helper = ObjectManager::getInstance()->get(Data::class);
         parent::__construct($entityFactory);
 
         /** @var string $logDirectory */
         $logDirectory = \Krexx::$pool->config->getLogDir();
 
-
         $this
-            // We onnly want to parse the log dir, and nothing else.
+            // We only want to parse the log dir, and nothing else.
             ->setCollectRecursively(false)
             // Set the logdir, which is configured in kreXX
             ->addTargetDir($logDirectory)
