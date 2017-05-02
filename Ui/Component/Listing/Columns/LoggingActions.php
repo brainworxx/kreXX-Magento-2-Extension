@@ -60,22 +60,24 @@ class LoggingActions extends Column
         array $components = [],
         array $data = []
     ) {
-        $this->urlBuilder = ObjectManager::getInstance()->get(UrlInterface::class);
+        $objectManager = ObjectManager::getInstance();
+        $this->urlBuilder = $objectManager->get(UrlInterface::class);
+
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
     /**
-     * Prepare Data Source
+     * Prepare the actions for the grid
      *
      * @param array $dataSource
      * @return array
      */
     public function prepareDataSource(array $dataSource)
     {
-
         if (isset($dataSource['data']['items'])) {
-            //this is just a demo, it might not work on your instance.
             foreach ($dataSource['data']['items'] as &$item) {
+                // Open the logfile in a new tab. That way we can go back
+                // fast, without renewing the admin grid.
                 $item[$this->getData('name')]['view'] = [
                     'href' => $this->urlBuilder->getUrl(
                         'm2krexx/logging/view',
@@ -85,6 +87,8 @@ class LoggingActions extends Column
                     'hidden' => true,
                 ];
 
+                // Open in the same tab. We will redirect back again after
+                // the file was deleted.
                 $item[$this->getData('name')]['delete'] = [
                     'href' => $this->urlBuilder->getUrl(
                         'm2krexx/logging/delete',
@@ -92,9 +96,14 @@ class LoggingActions extends Column
                     ),
                     'label' => 'Delete',
                     'hidden' => false,
+                    'confirm' => [
+                        'title' => 'Delete file ID: ' . $item['id'],
+                        'message' => 'Are you sure?'
+                    ],
                 ];
             }
         }
+
         return $dataSource;
     }
 }

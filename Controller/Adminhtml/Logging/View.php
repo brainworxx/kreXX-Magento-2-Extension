@@ -36,24 +36,43 @@ namespace Brainworxx\M2krexx\Controller\Adminhtml\Logging;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Backend\App\Action;
+use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\Filesystem\File\ReadFactory;
 
-class Delete extends Action
+class View extends Action
 {
     /**
-     * The redirect back to the logfile overview.
+     * The redirect answer.
      *
      * @var Redirect
      */
     protected $resultRedirect;
 
     /**
+     * The raw result (aka the logfile content).
+     *
+     * @var Raw
+     */
+    protected $resultRaw;
+
+    /**
+     * Basic file operations.
+     *
      * @var File
      */
     protected $ioFile;
+
+    /**
+     * Filesystem
+     *
+     * @var ReadFactory
+     */
+    protected $fileReadFactory;
 
     /**
      * @var UrlInterface
@@ -69,9 +88,11 @@ class Delete extends Action
     {
         $objectManager = ObjectManager::getInstance();
 
-        $this->resultRedirect = $objectManager->get(Redirect::class);
+        $this->resultRaw = $objectManager->get(Raw::class);
         $this->ioFile = $objectManager->get(File::class);
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
+        $this->resultRedirect = $objectManager->get(Redirect::class);
+        $this->fileReadFactory = $objectManager->get(ReadFactory::class);
 
         parent::__construct($context);
 
@@ -88,21 +109,37 @@ class Delete extends Action
         // Sanitize the id.
         $id = preg_replace('/[^0-9]/', '', $this->getRequest()->getParam('id'));
         // Get the filepath.
-        $file = \Krexx::$pool->config->getLogDir() . $id . '.Krexx';
+        $file = \Krexx::$pool->config->getLogDir() . $id . '.Krexx.html';
 
-        if ($this->ioFile->rm($file . '.html') && $this->ioFile->rm($file . '.html.json')) {
-            // Logfiles were sucessully deleted!
-            $this->messageManager->addSuccess('Deleted logfile id: ' . $id);
+        if ($this->ioFile->fileExists($file, true)) {
+            // Open the file and dispatch it!
+            /** @var \Magento\Framework\Filesystem\File\Read $read */
+            $read = $this->fileReadFactory->create($file, DriverPool::FILE);
+
+            $stream = $read->read(1024);
+
+            while (!$read->eof()) {
+                echo $stream;
+                // Use output buffering.
+                ob_flush();
+                flush();
+                // Get new data.
+                $stream = $read->read(1024);
+            }
+            $read->close();
+
+            // Do nothing. Tell the framework that we are done.
+            return $this->resultRaw;
         } else {
-            // Failed to delete at least one file!
-            $this->messageManager->addError('Failed to delete logfile id: ' . $id . '!');
+            // No file to send.   :-(
+            // Tell the user that the file was not readable.
+            $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/logging/index'));
+            $this->messageManager->addError('Unable to open logfile id: ' . $id . '!');
+            // Redirect to the log index.
+            return $this->resultRedirect;
         }
 
-        // Set the redirect url.
-        $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/logging/index'));
 
-        // Return the redirect.
-        return $this->resultRedirect;
 
     }
 }

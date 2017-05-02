@@ -52,6 +52,7 @@ class Data extends AbstractHelper
     public function generateRow(array $row)
     {
         $timestamp = filemtime($row['filename']);
+        // @todo get filesize and date from the io-class.
         $filesize = $this->fileSizeConvert(filesize($row['filename']));
 
         $result = array(
