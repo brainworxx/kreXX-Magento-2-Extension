@@ -76,14 +76,7 @@ class Index extends Action
         $pageResult = $this->resultPageFactory->create();
         $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
         $pageResult->getConfig()->getTitle()->prepend('Edit local browser settings');
-        $this->_setActiveMenu('Your menu id here') //can skip this
-            ->_addBreadcrumb(
-                'kreXX Debugger',
-                'kreXX Debugger'
-            )->_addBreadcrumb(
-                'Edit local browser settings',
-                'Edit local browser settings'
-            );
+        
         return $pageResult;
     }
 }

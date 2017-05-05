@@ -81,14 +81,7 @@ class Index extends Action
         $pageResult = $this->resultPageFactory->create();
         $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
         $pageResult->getConfig()->getTitle()->prepend('Logfile access');
-        $this->_setActiveMenu('Your menu id here') //can skip this
-            ->_addBreadcrumb(
-                'kreXX Debugger',
-                'kreXX Debugger'
-            )->_addBreadcrumb(
-                'Logfile access',
-                'Logfile access'
-            );
+        
         return $pageResult;
 
     }
