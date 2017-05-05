@@ -116,15 +116,13 @@ class View extends Action
             /** @var \Magento\Framework\Filesystem\File\Read $read */
             $read = $this->fileReadFactory->create($file, DriverPool::FILE);
 
-            $stream = $read->read(1024);
-
             while (!$read->eof()) {
-                echo $stream;
                 // Use output buffering.
                 ob_flush();
                 flush();
                 // Get new data.
                 $stream = $read->read(1024);
+                echo $stream;
             }
             $read->close();
 
