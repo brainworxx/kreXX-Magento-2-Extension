@@ -41,13 +41,6 @@ use Magento\Framework\App\ObjectManager;
 
 class Collection extends Filesystem
 {
-    /**
-     * Filenames regex filter
-     * @todo wtf ist this?!?
-     *
-     * @var string
-     */
-    protected $allowedFilesMask = '/^[a-z0-9\.\-\_]+[bar]\.log/i';
 
     /**
      * @var \Brainworxx\M2krexx\Helper\Data $helper
