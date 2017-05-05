@@ -38,7 +38,9 @@
     __DIR__
 );
 
-
+// This should either trigger the autoloader.
+// If not, we will use the bundeled version
+// @todo add kreXX overwrite clases
 if (!class_exists('Krexx')) {
     include 'krexx/Krexx.php';
 }

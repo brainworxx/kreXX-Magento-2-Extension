@@ -35,12 +35,46 @@
 namespace Brainworxx\M2krexx\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Escaper;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\UrlInterface;
 
 class Data extends AbstractHelper
 {
+
+    /**
+     * Building Uris fro fun and profit.
+     *
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
+     * File access.
+     *
+     * @var File
+     */
+    protected $fileIo;
+
+    /**
+     * Escaping the oputput for security reasons.
+     *
+     * @var Escaper
+     */
+    protected $escaper;
+
+    public function __construct(\Magento\Framework\App\Helper\Context $context)
+    {
+        // Getting out act together.
+        $objectManager = ObjectManager::getInstance();
+        $this->urlBuilder = $objectManager->get(UrlInterface::class);
+        $this->fileIo = $objectManager->get(File::class);
+        $this->escaper = $objectManager->create(Escaper::class);
+
+        parent::__construct($context);
+    }
 
     /**
      * Generates the rows for the admin grid, used to access the logfiles.
@@ -52,15 +86,15 @@ class Data extends AbstractHelper
     public function generateRow(array $row)
     {
         $timestamp = filemtime($row['filename']);
-        // @todo get filesize and date from the io-class.
-        $filesize = $this->fileSizeConvert(filesize($row['filename']));
+        $fileSize = $this->fileSizeConvert(filesize($row['filename']));
+        $id = (int)str_replace('.Krexx.html', '', $row['basename']);
 
         $result = array(
-            'id' => (int)str_replace('.Krexx.html', '', $row['basename']),
-            'filename' => $row['basename'],
+            'id' => $id,
+            'filename' => $this->generateLinkToViewAction($row['basename'], $id),
             'timestamp' => $timestamp,
             'date' => date("d.m.y H:i:s", $timestamp),
-            'size' => $filesize,
+            'size' => $fileSize,
             'meta_analysis_of' => '',
             'meta_called_in' => '',
         );
@@ -69,19 +103,13 @@ class Data extends AbstractHelper
         // That is why the kreXX lib provides a meta data file. We will open
         // this file and add it's content to the template.
         if (is_readable($row['filename'] . '.json')) {
-            $objectManager = ObjectManager::getInstance();
-            /** @var File $ioFile */
-            $ioFile = $objectManager->get(File::class);
-            /** @var Escaper $escaper */
-            $escaper = $objectManager->create(Escaper::class);
-
-            $fileinfo['meta'] = json_decode($ioFile->read($row['filename'] . '.json'), true);
+            $fileinfo['meta'] = json_decode($this->fileIo->read($row['filename'] . '.json'), true);
             foreach ($fileinfo['meta'] as &$meta) {
-                $result['meta_called_in'] .= $escaper->escapeHtml(basename($meta['file'])) .
-                    ' in line <b>' .  $escaper->escapeHtml($meta['line']) . '</b><hr/>';
+                $result['meta_called_in'] .= $this->escaper->escapeHtml(basename($meta['file'])) .
+                    ' in line <b>' .  $this->escaper->escapeHtml($meta['line']) . '</b><hr/>';
 
-                $result['meta_analysis_of'] .= $escaper->escapeHtml($meta['type']) .
-                    ': <b>' . $escaper->escapeHtml($meta['varname']) . '</b><hr/>';
+                $result['meta_analysis_of'] .= $this->escaper->escapeHtml($meta['type']) .
+                    ': <b>' . $this->escaper->escapeHtml($meta['varname']) . '</b><hr/>';
             }
 
             $result['meta_called_in'] = substr($result['meta_called_in'], 0, -3);
@@ -90,6 +118,21 @@ class Data extends AbstractHelper
 
 
         return $result;
+    }
+
+    /**
+     * Generate a link to the logfile dispatcher for thsi file.
+     *
+     * @param string $basename
+     * @param int $id
+     *
+     * @return string
+     *   The generated link to the dispatcher.
+     */
+    protected function generateLinkToViewAction($basename, $id)
+    {
+        $url = $this->urlBuilder->getUrl('m2krexx/logging/view', ['id' => $id]);
+        return '<a target="_blank" href="' . $url . '">' . $this->escaper->escapeHtml($basename) . '</a>';
     }
 
     /**

@@ -43,6 +43,7 @@ class Collection extends Filesystem
 {
     /**
      * Filenames regex filter
+     * @todo wtf ist this?!?
      *
      * @var string
      */

@@ -76,17 +76,6 @@ class LoggingActions extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
-                // Open the logfile in a new tab. That way we can go back
-                // fast, without renewing the admin grid.
-                $item[$this->getData('name')]['view'] = [
-                    'href' => $this->urlBuilder->getUrl(
-                        'm2krexx/logging/view',
-                        ['id' => $item['id']]
-                    ),
-                    'label' => 'View',
-                    'hidden' => true,
-                ];
-
                 // Open in the same tab. We will redirect back again after
                 // the file was deleted.
                 $item[$this->getData('name')]['delete'] = [
