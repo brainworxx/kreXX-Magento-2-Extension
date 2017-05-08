@@ -76,7 +76,7 @@ class Index extends Action
         $pageResult = $this->resultPageFactory->create();
         $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
         $pageResult->getConfig()->getTitle()->prepend('Edit local browser settings');
-        
+
         return $pageResult;
     }
 }

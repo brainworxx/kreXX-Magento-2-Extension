@@ -35,48 +35,63 @@
 namespace Brainworxx\M2krexx\Controller\Adminhtml\Config;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\UrlInterface;
 
-class Edit extends Action
+class SaveEdit extends Action
 {
-    protected $resultPageFactory;
+    /**
+     * The redirect back to the logfile overview.
+     *
+     * @var Redirect
+     */
+    protected $resultRedirect;
 
     /**
-     * Authorization level of a basic admin session
+     * @var File
      */
-    const ADMIN_RESOURCE = 'Brainworxx_M2krexx::configure';
+    protected $ioFile;
+
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
 
     /**
      * Constructor
      *
-     * @param \Magento\Framework\App\Action\Context  $context
+     * @param \Magento\Framework\App\Action\Context $context
      */
     public function __construct(Context $context)
     {
-        $this->resultPageFactory = ObjectManager::getInstance()->get(PageFactory::class);
+        $objectManager = ObjectManager::getInstance();
+
+        $this->resultRedirect = $objectManager->get(Redirect::class);
+        $this->ioFile = $objectManager->get(File::class);
+        $this->urlBuilder = $objectManager->get(UrlInterface::class);
+
         parent::__construct($context);
 
-        // Has kreXX something to say? Maybe a writeprotected logfolder?
-        // We are only facing error messages here, normally.
-        $messages = strip_tags(\Krexx::$pool->messages->outputMessages());
-        if (!empty($messages)) {
-            $this->messageManager->addError($messages);
-        }
     }
 
     /**
-     * Execute view action
+     * Save the data from the form to the kreXX config file.
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        $pageResult = $this->resultPageFactory->create();
-        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
-        $pageResult->getConfig()->getTitle()->prepend('Edit kreXX Configuration File');
+        krexx($this->getRequest()->getParams());
+        die();
 
-        return $pageResult;
+        // Set the redirect url.
+        $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/logging/index'));
+
+        // Return the redirect.
+        return $this->resultRedirect;
+
     }
 }

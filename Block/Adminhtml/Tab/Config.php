@@ -32,51 +32,56 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\M2krexx\Controller\Adminhtml\Config;
+namespace Brainworxx\M2krexx\Block\Adminhtml\Tab;
 
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Backend\App\Action;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\App\ObjectManager;
 
-class Edit extends Action
+class Config extends \Magento\Backend\Block\Widget implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
-    protected $resultPageFactory;
 
     /**
-     * Authorization level of a basic admin session
-     */
-    const ADMIN_RESOURCE = 'Brainworxx_M2krexx::configure';
-
-    /**
-     * Constructor
+     * Generate the URL of this tab. Simnple as that..
      *
-     * @param \Magento\Framework\App\Action\Context  $context
+     * @return string
      */
-    public function __construct(Context $context)
+    public function getTabUrl()
     {
-        $this->resultPageFactory = ObjectManager::getInstance()->get(PageFactory::class);
-        parent::__construct($context);
-
-        // Has kreXX something to say? Maybe a writeprotected logfolder?
-        // We are only facing error messages here, normally.
-        $messages = strip_tags(\Krexx::$pool->messages->outputMessages());
-        if (!empty($messages)) {
-            $this->messageManager->addError($messages);
-        }
+        return ObjectManager::getInstance()
+            ->get(UrlInterface::class)
+            ->getUrl('m2krexx/config/edit');
     }
 
     /**
-     * Execute view action
-     *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return \Magento\Framework\Phrase
      */
-    public function execute()
+    public function getTabLabel()
     {
-        $pageResult = $this->resultPageFactory->create();
-        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
-        $pageResult->getConfig()->getTitle()->prepend('Edit kreXX Configuration File');
-
-        return $pageResult;
+        return __('Edit kreXX Configuration File');
     }
+
+    /**
+     * @return \Magento\Framework\Phrase
+     */
+    public function getTabTitle()
+    {
+        return __('Edit kreXX Configuration File');
+    }
+
+    /**
+     * @return bool
+     */
+    public function canShowTab()
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return false;
+    }
+
 }

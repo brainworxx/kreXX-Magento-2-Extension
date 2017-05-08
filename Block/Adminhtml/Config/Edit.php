@@ -43,5 +43,179 @@ use Magento\Backend\Block\Template;
  */
 class Edit extends Template
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(\Magento\Backend\Block\Template\Context $context, array $data = [])
+    {
+        parent::__construct($context, $data);
 
+        $help = array();
+        $settings = array();
+        $factory = array();
+        $pool = \Krexx::$pool;
+
+        // Initialzing help data for the template.
+        $help['skin'] = htmlspecialchars(strip_tags($pool->messages->getHelp('skin')));
+        $help['iprange'] = 'List of IPs that can trigger kreXX. Wildcards can be used.';
+        $help['maxfiles'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxfiles')));
+        $help['destination'] = htmlspecialchars(strip_tags($pool->messages->getHelp('destination')));
+        $help['maxCall'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxCall')));
+        $help['disabled'] = 'Here you can disable kreXX without uninstalling the whole module.';
+        $help['detectAjax'] = htmlspecialchars(strip_tags($pool->messages->getHelp('detectAjax')));
+        $help['analyseProtected'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseProtected')));
+        $help['analysePrivate'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analysePrivate')));
+        $help['analyseTraversable'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseTraversable')));
+        $help['debugMethods'] = 'Comma-separated list of used debug callback functions. kreXX will try to call them,' .
+            "if they are available and display their provided data.\nWe Recommend for Magento: '__toArray,toString'";
+        $help['level'] = htmlspecialchars(strip_tags($pool->messages->getHelp('level')));
+        $help['analyseProtectedMethods'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseProtectedMethods')));
+        $help['analysePrivateMethods'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analysePrivateMethods')));
+        $help['registerAutomatically'] = htmlspecialchars(strip_tags($pool->messages->getHelp('registerAutomatically')));
+        $help['analyseConstants'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseConstants')));
+        $help['analyseGetter'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseGetter')));
+        $help['useScopeAnalysis'] = htmlspecialchars(strip_tags($pool->messages->getHelp('useScopeAnalysis')));
+        $help['memoryLeft'] = htmlspecialchars(strip_tags($pool->messages->getHelp('memoryLeft')));
+        $help['maxRuntime'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxRuntime')));
+        $help['maxStepNumber'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxStepNumber')));
+
+        $this->assign('help', $help);
+
+        // Initializing the select data for the template.
+        $this->setSelectDestination(array(
+            'browser' => 'browser',
+            'file' => 'file'
+        ));
+        $this->setSelectBool(array('true' => 'true', 'false' => 'false'));
+        $this->setSelectBacktrace(array(
+            'normal' => 'normal',
+            'deep' => 'deep'
+        ));
+        $skins = array();
+
+
+        foreach ($pool->render->getSkinList() as $skin) {
+            $skins[$skin] = $skin;
+        }
+
+        // Get all values from the configuration file.
+        $settings['output']['skin'] = $pool->config->getConfigFromFile(
+            'output',
+            'skin'
+        );
+        $settings['output']['maxfiles'] = $pool->config->getConfigFromFile(
+            'output',
+            'maxfiles'
+        );
+        $settings['output']['destination'] = $pool->config->getConfigFromFile(
+            'output',
+            'destination'
+        );
+        $settings['runtime']['maxCall'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'maxCall'
+        );
+        $settings['output']['disabled'] = $pool->config->getConfigFromFile(
+            'output',
+            'disabled'
+        );
+        $settings['output']['iprange'] = $pool->config->getConfigFromFile(
+            'output',
+            'iprange'
+        );
+        $settings['runtime']['detectAjax'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'detectAjax'
+        );
+        $settings['properties']['analyseProtected'] = $pool->config->getConfigFromFile(
+            'properties',
+            'analyseProtected'
+        );
+        $settings['properties']['analysePrivate'] = $pool->config->getConfigFromFile(
+            'properties',
+            'analysePrivate'
+        );
+        $settings['properties']['analyseConstants'] = $pool->config->getConfigFromFile(
+            'properties',
+            'analyseConstants'
+        );
+        $settings['properties']['analyseTraversable'] = $pool->config->getConfigFromFile(
+            'properties',
+            'analyseTraversable'
+        );
+        $settings['methods']['debugMethods'] = $pool->config->getConfigFromFile(
+            'methods',
+            'debugMethods'
+        );
+        $settings['runtime']['level'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'level'
+        );
+        $settings['methods']['analyseProtectedMethods'] = $pool->config->getConfigFromFile(
+            'methods',
+            'analyseProtectedMethods'
+        );
+        $settings['methods']['analysePrivateMethods'] = $pool->config->getConfigFromFile(
+            'methods',
+            'analysePrivateMethods'
+        );
+        $settings['backtraceAndError']['registerAutomatically'] = $pool->config->getConfigFromFile(
+            'backtraceAndError',
+            'registerAutomatically'
+        );
+        $settings['methods']['analyseGetter'] = $pool->config->getConfigFromFile(
+            'methods',
+            'analyseGetter'
+        );
+        $settings['runtime']['useScopeAnalysis'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'useScopeAnalysis'
+        );
+        $settings['runtime']['memoryLeft'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'memoryLeft'
+        );
+        $settings['runtime']['maxRuntime'] = $pool->config->getConfigFromFile(
+            'runtime',
+            'maxRuntime'
+        );
+        $settings['backtraceAndError']['maxStepNumber'] = $pool->config->getConfigFromFile(
+            'backtraceAndError',
+            'maxStepNumber'
+        );
+
+        // Are these actually set?
+        foreach ($settings as $mainkey => $setting) {
+            foreach ($setting as $attribute => $config) {
+                if (is_null($config)) {
+                    $factory[$attribute] = ' checked="checked" ';
+                    // We need to fill these values with the stuff from the factory settings!
+                    $settings[$mainkey][$attribute] = $pool->config->configFallback[$mainkey][$attribute];
+                } else {
+                    $factory[$attribute] = '';
+                }
+            }
+        }
+
+        // Add them to the template.
+        $this->assign('skins', $skins);
+        $this->assign('settings', $settings);
+        $this->assign('factory', $factory);
+    }
+
+    /**
+     * Add elements in layout
+     *
+     * @return $this
+     */
+    protected function _prepareLayout()
+    {
+        $this->getToolbar()->addChild('save_config', 'Magento\Backend\Block\Widget\Button', [
+                'label' => __('Save configuration'),
+                'title' => __('Save configuration'),
+                'onclick' => 'submitMainform();',
+                'class' => 'action-default primary'
+            ]);
+        return parent::_prepareLayout();
+    }
 }
