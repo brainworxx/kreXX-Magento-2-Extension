@@ -56,40 +56,40 @@ class Edit extends Template
         $pool = \Krexx::$pool;
 
         // Initialzing help data for the template.
-        $help['skin'] = htmlspecialchars(strip_tags($pool->messages->getHelp('skin')));
-        $help['iprange'] = 'List of IPs that can trigger kreXX. Wildcards can be used.';
-        $help['maxfiles'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxfiles')));
-        $help['destination'] = htmlspecialchars(strip_tags($pool->messages->getHelp('destination')));
-        $help['maxCall'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxCall')));
-        $help['disabled'] = 'Here you can disable kreXX without uninstalling the whole module.';
-        $help['detectAjax'] = htmlspecialchars(strip_tags($pool->messages->getHelp('detectAjax')));
-        $help['analyseProtected'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseProtected')));
-        $help['analysePrivate'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analysePrivate')));
-        $help['analyseTraversable'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseTraversable')));
-        $help['debugMethods'] = 'Comma-separated list of used debug callback functions. kreXX will try to call them,' .
-            "if they are available and display their provided data.\nWe Recommend for Magento: '__toArray,toString'";
-        $help['level'] = htmlspecialchars(strip_tags($pool->messages->getHelp('level')));
-        $help['analyseProtectedMethods'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseProtectedMethods')));
-        $help['analysePrivateMethods'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analysePrivateMethods')));
-        $help['registerAutomatically'] = htmlspecialchars(strip_tags($pool->messages->getHelp('registerAutomatically')));
-        $help['analyseConstants'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseConstants')));
-        $help['analyseGetter'] = htmlspecialchars(strip_tags($pool->messages->getHelp('analyseGetter')));
-        $help['useScopeAnalysis'] = htmlspecialchars(strip_tags($pool->messages->getHelp('useScopeAnalysis')));
-        $help['memoryLeft'] = htmlspecialchars(strip_tags($pool->messages->getHelp('memoryLeft')));
-        $help['maxRuntime'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxRuntime')));
-        $help['maxStepNumber'] = htmlspecialchars(strip_tags($pool->messages->getHelp('maxStepNumber')));
+        $help['skin'] = $this->prepareHelp($pool->messages->getHelp('skin'));
+        $help['iprange'] = __('List of IPs that can trigger kreXX. Wildcards can be used.');
+        $help['maxfiles'] = $this->prepareHelp($pool->messages->getHelp('maxfiles'));
+        $help['destination'] = $this->prepareHelp($pool->messages->getHelp('destination'));
+        $help['maxCall'] = $this->prepareHelp($pool->messages->getHelp('maxCall'));
+        $help['disabled'] = __('Here you can disable kreXX without uninstalling the whole module.');
+        $help['detectAjax'] = $this->prepareHelp($pool->messages->getHelp('detectAjax'));
+        $help['analyseProtected'] = $this->prepareHelp($pool->messages->getHelp('analyseProtected'));
+        $help['analysePrivate'] = $this->prepareHelp($pool->messages->getHelp('analysePrivate'));
+        $help['analyseTraversable'] = $this->prepareHelp($pool->messages->getHelp('analyseTraversable'));
+        $help['debugMethods'] = __('Comma-separated list of used debug callback functions. kreXX will try to call them,' .
+            "if they are available and display their provided data.\nWe Recommend for Magento: '__toArray,toString'");
+        $help['level'] = $this->prepareHelp($pool->messages->getHelp('level'));
+        $help['analyseProtectedMethods'] = $this->prepareHelp($pool->messages->getHelp('analyseProtectedMethods'));
+        $help['analysePrivateMethods'] = $this->prepareHelp($pool->messages->getHelp('analysePrivateMethods'));
+        $help['registerAutomatically'] = $this->prepareHelp($pool->messages->getHelp('registerAutomatically'));
+        $help['analyseConstants'] = $this->prepareHelp($pool->messages->getHelp('analyseConstants'));
+        $help['analyseGetter'] = $this->prepareHelp($pool->messages->getHelp('analyseGetter'));
+        $help['useScopeAnalysis'] = $this->prepareHelp($pool->messages->getHelp('useScopeAnalysis'));
+        $help['memoryLeft'] = $this->prepareHelp($pool->messages->getHelp('memoryLeft'));
+        $help['maxRuntime'] = $this->prepareHelp($pool->messages->getHelp('maxRuntime'));
+        $help['maxStepNumber'] = $this->prepareHelp($pool->messages->getHelp('maxStepNumber'));
 
         $this->assign('help', $help);
 
         // Initializing the select data for the template.
         $this->setSelectDestination(array(
-            'browser' => 'browser',
-            'file' => 'file'
+            'browser' => __('browser'),
+            'file' => __('file')
         ));
         $this->setSelectBool(array('true' => 'true', 'false' => 'false'));
         $this->setSelectBacktrace(array(
-            'normal' => 'normal',
-            'deep' => 'deep'
+            'normal' => __('normal'),
+            'deep' => __('deep')
         ));
         $skins = array();
 
@@ -217,5 +217,22 @@ class Edit extends Template
                 'class' => 'action-default primary'
             ]);
         return parent::_prepareLayout();
+    }
+
+    /**
+     * Prepares the help text from the kreXX library by:
+     * - Removing all tags
+     * - htmlspecialchar'ing
+     * - using the translate underscore
+     *
+     * @param $string
+     *   The string we need to prepare
+     *
+     * @return string
+     *   The prepared string.
+     */
+    protected function prepareHelp($string)
+    {
+        return __(htmlspecialchars(strip_tags($string)));
     }
 }

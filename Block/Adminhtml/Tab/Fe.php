@@ -56,7 +56,7 @@ class Fe extends \Magento\Backend\Block\Widget implements \Magento\Backend\Block
      */
     public function getTabLabel()
     {
-        return __('Edit kreXX FE configuration');
+        return __('Edit kreXX FE Configuration');
     }
 
     /**
@@ -64,7 +64,7 @@ class Fe extends \Magento\Backend\Block\Widget implements \Magento\Backend\Block
      */
     public function getTabTitle()
     {
-        return __('Edit kreXX FE configuration');
+        return __('Edit kreXX FE Configuration');
     }
 
     /**

@@ -56,7 +56,7 @@ class Cookie extends \Magento\Backend\Block\Widget implements \Magento\Backend\B
      */
     public function getTabLabel()
     {
-        return __('Edit local browser settings');
+        return __('Edit Local Browser Settings');
     }
 
     /**
@@ -64,7 +64,7 @@ class Cookie extends \Magento\Backend\Block\Widget implements \Magento\Backend\B
      */
     public function getTabTitle()
     {
-        return __('Edit local browser settings');
+        return __('Edit Local Browser Settings');
     }
 
     /**

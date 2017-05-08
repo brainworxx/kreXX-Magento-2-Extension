@@ -92,10 +92,10 @@ class Delete extends Action
 
         if ($this->ioFile->rm($file . '.html') && $this->ioFile->rm($file . '.html.json')) {
             // Logfiles were sucessully deleted!
-            $this->messageManager->addSuccess('Deleted logfile id: ' . $id);
+            $this->messageManager->addSuccess(__('Deleted logfile id: %1', $id));
         } else {
             // Failed to delete at least one file!
-            $this->messageManager->addError('Failed to delete logfile id: ' . $id . '!');
+            $this->messageManager->addError(__('Failed to delete logfile id: %1!', $id));
         }
 
         // Set the redirect url.

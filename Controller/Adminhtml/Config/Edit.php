@@ -74,8 +74,8 @@ class Edit extends Action
     public function execute()
     {
         $pageResult = $this->resultPageFactory->create();
-        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
-        $pageResult->getConfig()->getTitle()->prepend('Edit kreXX Configuration File');
+        $pageResult->getConfig()->getTitle()->set(__('kreXX Debugger'));
+        $pageResult->getConfig()->getTitle()->prepend(__('Edit kreXX Configuration File'));
 
         return $pageResult;
     }

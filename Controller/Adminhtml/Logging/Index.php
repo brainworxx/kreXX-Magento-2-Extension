@@ -79,8 +79,8 @@ class Index extends Action
     public function execute()
     {
         $pageResult = $this->resultPageFactory->create();
-        $pageResult->getConfig()->getTitle()->set('kreXX Debugger');
-        $pageResult->getConfig()->getTitle()->prepend('Logfile access');
+        $pageResult->getConfig()->getTitle()->set(__('kreXX Debugger'));
+        $pageResult->getConfig()->getTitle()->prepend(__('Logfile Access'));
 
         return $pageResult;
 

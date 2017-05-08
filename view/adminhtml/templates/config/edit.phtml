@@ -618,13 +618,56 @@
 <script type="text/javascript">
     //<![CDATA[
 
+    (function () {
+        "use strict";
+
+        var checkboxes = document.getElementsByName('factory');
+
+        var toggle = function (checkbox) {
+            var id = checkbox.id.split('.');
+            if (id[1] != 'undefined') {
+                var element = document.getElementById(id[1]);
+            }
+
+            if (typeof element === 'object' && element != 'undefined' && element != null) {
+
+
+                if (checkbox.checked) {
+                    element.disabled = true;
+                }
+                else {
+                    element.disabled = false;
+                }
+            }
+        };
+
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            toggle(checkboxes[i]);
+            // var checkbox[i] = checkboxes[i]
+            checkboxes[i].addEventListener('click', function () {
+                toggle(this);
+            }, true);
+        }
+
+        var savebutton = document.getElementById('editconfig_save');
+        if (typeof savebutton === 'object' && savebutton != 'undefined' && savebutton != null) {
+            savebutton.addEventListener('click', function () {
+                var form = document.getElementById('editconfig');
+                if (typeof form === 'object' && form != 'undefined' && form != null) {
+                    form.submit();
+                }
+            }, true);
+        }
+    })();
+    
+
     // Submit the form above. Is used by the toobyr button
     // @see Brainworxx\M2krexx\Block\Adminhtml\Config\Edit
     // @see _prepareLayout()
-
     var submitMainform = function() {
         document.getElementById('m2krexx_config').submit();
-    }
+    };
+
     //]]>
 </script>
 

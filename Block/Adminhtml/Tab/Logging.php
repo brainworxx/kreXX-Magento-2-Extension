@@ -56,7 +56,7 @@ class Logging extends \Magento\Backend\Block\Widget implements \Magento\Backend\
      */
     public function getTabLabel()
     {
-        return __('kreXX Logfile access');
+        return __('kreXX Logfile Access');
     }
 
     /**
@@ -64,7 +64,7 @@ class Logging extends \Magento\Backend\Block\Widget implements \Magento\Backend\
      */
     public function getTabTitle()
     {
-        return __('kreXX Logfile access');
+        return __('kreXX Logfile Access');
     }
 
     /**

@@ -37,6 +37,19 @@
 <br /><br /><br /><br /><br /><br />
 <hr />
 
+<script type="text/javascript">
+    //<![CDATA[
+
+    // Submit the form above. Is used by the toobyr button
+    // @see Brainworxx\M2krexx\Block\Adminhtml\Config\Edit
+    // @see _prepareLayout()
+
+    var submitMainform = function() {
+        document.getElementById('m2krexx_fe').submit();
+    }
+    //]]>
+</script>
+
 <div class="accordion">
     <?php echo $this->getChildHtml('m2krexx_help_usage') ?>
     <?php echo $this->getChildHtml('m2krexx_help_config') ?>

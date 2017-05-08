@@ -73,6 +73,10 @@ class Fe extends Action
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        $pageResult = $this->resultPageFactory->create();
+        $pageResult->getConfig()->getTitle()->set(__('kreXX Debugger'));
+        $pageResult->getConfig()->getTitle()->prepend(__('Edit kreXX FE Configuration'));
+
+        return $pageResult;
     }
 }
