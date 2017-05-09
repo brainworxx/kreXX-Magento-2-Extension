@@ -43,6 +43,53 @@ use Magento\Framework\UrlInterface;
 
 class SaveFe extends Action
 {
+    /**
+     * List of all setting-nanes for which we are accepting values.
+     *
+     * @var array
+     */
+    protected $allowedSettingsNames = array(
+        'skin',
+//        'maxfiles',
+//        'destination',
+        'maxCall',
+        'disabled',
+        'detectAjax',
+        'analyseProtected',
+        'analysePrivate',
+        'analyseTraversable',
+//        'debugMethods',
+        'level',
+        'analyseProtectedMethods',
+        'analysePrivateMethods',
+        'registerAutomatically',
+        'backtraceAnalysis',
+        'analyseConstants',
+//        'iprange',
+        'memoryLeft',
+        'maxRuntime',
+        'useScopeAnalysis',
+        'analyseGetter',
+        'maxStepNumber',
+    );
+
+    /**
+     * List of all sections for which we are accepting values
+     *
+     * @var array
+     */
+    protected $allowedSections = array(
+        'runtime',
+        'output',
+        'properties',
+        'methods',
+        'backtraceAndError',
+    );
+
+    /**
+     * Authorization level of a basic admin session
+     */
+    const ADMIN_RESOURCE = 'Brainworxx_M2krexx::configure';
 
     /**
      * The redirect back to the logfile overview.
@@ -85,8 +132,70 @@ class SaveFe extends Action
      */
     public function execute()
     {
-        krexx($this->getRequest()->getParams());
-        die();
+        $arguments = $this->getRequest()->getParams();
+        $all_ok = true;
+        $pool = \Krexx::$pool;
+        $filepath = $pool->krexxDir . 'config/Krexx.ini';
+
+        // Whitelist of the vales we are accepting.
+        $allowed_values = array('full', 'display', 'none');
+
+        // Get the old values . . .
+        if ($this->ioFile->fileExists($filepath)) {
+            $old_values = parse_ini_file($filepath, true);
+            // . . . and remove our part.
+            unset($old_values['feEditing']);
+        } else {
+            $old_values = array();
+        }
+
+        // Iterating through the form.
+        foreach ($arguments as $key => $data) {
+            if (is_array($data)) {
+                foreach ($data as $setting_name => $value) {
+                    if (in_array($value, $allowed_values) && in_array($setting_name, $this->allowedSettingsNames)) {
+                        // Whitelisted values are ok.
+                        $old_values['feEditing'][$setting_name] = $value;
+                    } else {
+                        // Validation failed!
+                        $all_ok = false;
+                        $pool->messages->addMessage(htmlentities($value) . ' is not an allowed value!');
+                    }
+                }
+            }
+        }
+
+        // Now we must create the ini file.
+        $ini = '';
+        foreach ($old_values as $key => $setting) {
+            $ini .= '[' . $key . ']' . PHP_EOL;
+            foreach ($setting as $setting_name => $value) {
+                $ini .= $setting_name . ' = "' . $value . '"' . PHP_EOL;
+            }
+        }
+
+        // Now we should write the file!
+        $callerFinder  = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Caller\\CallerFinder');
+        if ($all_ok) {
+            if ($this->ioFile->write($filepath, $ini) === false) {
+                $all_ok = false;
+                $pool->messages->addMessage('Configuration file ' .
+                    $callerFinder->filterFilePath($filepath) .
+                    ' is not writeable!');
+            }
+        }
+
+        // Something went wrong, we need to tell the user.
+        if (!$all_ok) {
+            $this->messageManager->addError(
+                strip_tags(__($pool->messages->outputMessages())) . '<br />' . __('The data was NOT saved.')
+            );
+        } else {
+            $this->messageManager->addSuccess(
+                __('The settings were saved to:') . '<br />' .
+                $callerFinder->filterFilePath($filepath)
+            );
+        }
 
         // Set the redirect url.
         $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/config/fe'));
