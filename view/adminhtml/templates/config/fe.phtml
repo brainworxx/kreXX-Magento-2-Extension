@@ -32,13 +32,481 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 ?>
-<h1>Edit frontend configuration goes here!</h1>
+<form id="m2krexx_fe" action="<?php echo $this->getUrl('m2krexx/config/savefe') ?>" method="post" enctype="multipart/form-data">
+    <?php echo $this->getBlockHtml('formkey') ?>
+    <h3>Here you can edit the frontend configuration form.</h3>
+    <table border="0">
+        <tr>
+            <td><?php echo __('full edit'); ?></td>
+            <td>&nbsp;<?php echo __('= The value can be edited in the frontend.'); ?></td>
+        </tr>
+        <tr>
+            <td>display</td>
+            <td>&nbsp;<?php echo __('= The value will only be displayed. kreXX will not accept any values for this setting.'); ?></td>
+        </tr>
+        <tr>
+            <td>do not display</td>
+            <td>&nbsp;<?php echo __('= kreXX will not display the value, nor accept any values for this setting.'); ?></td>
+        </tr>
+    </table>
+
+    <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+        <h3><?php echo __('Output'); ?></h3>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="even">
+                <td><span><?php echo __('Disable output:'); ?></span></td>
+                <td>
+                    <select name="output[disabled]" id="disabled" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['output']['disabled']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="disabled"></label>
+                </td>
+                <td>
+                    <input id="factory.disabled" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['disabled']; ?>/>
+                    <label for="factory.disabled"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('IP Range:'); ?></span></td>
+                <td><span><?php echo __('This setting is not editable on the frontend.'); ?></span></td>
+                <td></td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Skin'); ?></span></td>
+                <td>
+                    <select name="output[skin]" id="skin" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['output']['skin']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="skin"></label>
+                </td>
+                <td>
+                    <input id="factory.skin" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['skin']; ?>/>
+                    <label for="factory.skin"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Destination:'); ?></span></td>
+                <td><span><?php echo __('This setting is not editable on the frontend.'); ?></span></td>
+                <td></td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Maximum files in the logfolder:'); ?></span></td>
+                <td><span><?php echo __('This setting is not editable on the frontend.'); ?></span></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+        <h3><?php echo __('Runtime'); ?></h3>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="even">
+                <td><span><?php echo __('Try to detect AJAX requests:'); ?></span></td>
+                <td>
+                    <select name="runtime[detectAjax]" id="detectAjax" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['detectAjax']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="detectAjax"></label>
+                </td>
+                <td>
+                    <input id="factory.detectAjax" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['detectAjax']; ?>/>
+                    <label for="factory.detectAjax"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Maximum nesting level for objects and arrays:'); ?></span></td>
+                <td>
+                    <select name="runtime[level]" id="level" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['level']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="level"></label>
+                </td>
+                <td>
+                    <input id="factory.level" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['level']; ?>/>
+                    <label for="factory.level"></label>
+                </td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Maximum amount of calls:'); ?></span></td>
+                <td>
+                    <select name="runtime[maxCall]" id="maxCall" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['maxCall']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="maxCall"></label>
+                </td>
+                <td>
+                    <input id="factory.maxCall" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['maxCall']; ?>/>
+                    <label for="factory.maxCall"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Minimum amout of memory [MB]:'); ?></span></td>
+                <td>
+                    <select name="runtime[memoryLeft]" id="memoryLeft" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['memoryLeft']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            }
+                            ?>
+                            <option
+                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="memoryLeft"></label>
+                </td>
+                <td>
+                    <input id="factory.memoryLeft" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['memoryLeft']; ?>/>
+                    <label for="factory.memoryLeft"></label>
+                </td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Maximum Runtime [Seconds]:'); ?></span></td>
+                <td>
+                    <select name="runtime[maxRuntime]" id="maxRuntime" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['maxRuntime']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="maxRuntime"></label>
+                </td>
+                <td>
+                    <input id="factory.maxRuntime" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['maxRuntime']; ?>/>
+                    <label for="factory.maxRuntime"></label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+        <h3><?php echo __('Properties'); ?></h3>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="even">
+                <td><span><?php echo __('Analyse protected properties:'); ?></span></td>
+                <td>
+                    <select name="properties[analyseProtected]" id="analyseProtected" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['properties']['analyseProtected']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analyseProtected"></label>
+                </td>
+                <td>
+                    <input id="factory.analyseProtected" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analyseProtected']; ?>/>
+                    <label for="factory.analyseProtected"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Analyse private properties:'); ?></span></td>
+                <td>
+                    <select name="properties[analysePrivate]" id="analysePrivate" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['properties']['analysePrivate']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analysePrivate"></label>
+                </td>
+                <td>
+                    <input id="factory.analysePrivate" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analysePrivate']; ?>/>
+                    <label for="factory.analysePrivate"></label>
+                </td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Analyse constants:'); ?></span></td>
+                <td>
+                    <select name="properties[analyseConstants]" id="analyseConstants" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['properties']['analyseConstants']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analyseConstants"></label>
+                </td>
+                <td>
+                    <input id="factory.analyseConstants" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analyseConstants']; ?>/>
+                    <label for="factory.analyseConstants"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Analyse traversable data:'); ?></span></td>
+                <td>
+                    <select name="properties[analyseTraversable]" id="analyseTraversable" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['properties']['analyseTraversable']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analyseTraversable"></label>
+                </td>
+                <td>
+                    <input id="factory.analyseTraversable" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analyseTraversable']; ?>/>
+                    <label for="factory.analyseTraversable"></label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+        <h3><?php echo __('Methods'); ?></h3>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="even">
+                <td><span><?php echo __('Analyse protected class methods:'); ?></span></td>
+                <td>
+                    <select name="methods[analyseProtectedMethods]" id="analyseProtectedMethods" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['methods']['analyseProtectedMethods']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analyseProtectedMethods"></label>
+                </td>
+                <td>
+                    <input id="factory.analyseProtectedMethods" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analyseProtectedMethods']; ?>/>
+                    <label for="factory.analyseProtectedMethods"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Analyse private class methods:'); ?></span></td>
+                <td>
+                    <select name="methods[analysePrivateMethods]" id="analysePrivateMethods" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['methods']['analysePrivateMethods']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analysePrivateMethods"></label>
+                </td>
+                <td>
+                    <input id="factory.analysePrivateMethods" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analysePrivateMethods']; ?>/>
+                    <label for="factory.analysePrivateMethods"></label>
+                </td>
+            </tr>
+            <tr class="even">
+                <td><span><?php echo __('Analyse getter methods:') ?></span></td>
+                <td>
+                    <select name="methods[analyseGetter]" id="analyseGetter" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['methods']['analyseGetter']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="analyseGetter"></label>
+                </td>
+                <td>
+                    <input id="factory.analyseGetter" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['analyseGetter']; ?>/>
+                    <label for="factory.analyseGetter"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('List of debug methods to poll for data:'); ?></span></td>
+                <td><span><?php echo __('This setting is not editable on the frontend.'); ?></span></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
+        <h3><?php echo __('Error Handling and Backtrace'); ?></h3>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="even">
+                <td><span><?php echo __('Register fatal error handler automatically:'); ?></span></td>
+                <td>
+                    <select name="backtraceAndError[registerAutomatically]" id="registerAutomatically" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['backtraceAndError']['registerAutomatically']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option
+                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="registerAutomatically"></label>
+                </td>
+                <td>
+                    <input id="factory.registerAutomatically" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['registerAutomatically']; ?>/>
+                    <label for="factory.registerAutomatically"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Maximum count of steps in the backtrace:'); ?></span></td>
+                <td>
+                    <select name="backtraceAndError[maxStepNumber]" id="maxStepNumber" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['backtraceAndError']['maxStepNumber']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option
+                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="maxStepNumber"></label>
+                </td>
+                 <td>
+                    <input id="factory.maxStepNumber" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['maxStepNumber']; ?>/>
+                    <label for="factory.maxStepNumber"></label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
 
 <br /><br /><br /><br /><br /><br />
 <hr />
 
 <script type="text/javascript">
     //<![CDATA[
+
+    (function () {
+        "use strict";
+
+        var toggle = function (checkbox) {
+            var id = checkbox.id.split('.');
+            if (id[1] !== 'undefined') {
+                var element = document.getElementById(id[1]);
+            }
+
+            if (typeof element === 'object' && element !== 'undefined' && element !== null) {
+                element.disabled = checkbox.checked;
+            }
+        };
+
+        var checkboxes = document.getElementsByName('factory');
+
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            toggle(checkboxes[i]);
+            // var checkbox[i] = checkboxes[i]
+            checkboxes[i].addEventListener('click', function () {
+                toggle(this);
+            }, true);
+        }
+
+
+
+    })();
 
     // Submit the form above. Is used by the toobyr button
     // @see Brainworxx\M2krexx\Block\Adminhtml\Config\Edit

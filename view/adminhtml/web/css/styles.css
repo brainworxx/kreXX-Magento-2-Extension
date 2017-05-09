@@ -8,3 +8,11 @@
     margin: -1px 0 0;
     padding: 10px 10px 10px 26px;
 }
+#m2krexx_config .kleft,
+#m2krexx_fe .kleft {
+    width: 25%;
+}
+#m2krexx_config .kright,
+#m2krexx_fe  .kright {
+    width: 15%;
+}

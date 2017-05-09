@@ -41,8 +41,9 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\UrlInterface;
 
-class SaveEdit extends Action
+class SaveFe extends Action
 {
+
     /**
      * The redirect back to the logfile overview.
      *
@@ -88,7 +89,7 @@ class SaveEdit extends Action
         die();
 
         // Set the redirect url.
-        $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/config/edit'));
+        $this->resultRedirect->setUrl($this->urlBuilder->getUrl('m2krexx/config/fe'));
 
         // Return the redirect.
         return $this->resultRedirect;

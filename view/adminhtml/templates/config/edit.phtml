@@ -41,16 +41,16 @@
         <table class="data-grid">
             <thead>
             <tr>
-                <th class="data-grid-th" >Description</th>
-                <th class="data-grid-th" >Setting</th>
-                <th class="data-grid-th" >Use factory settings</th>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
             </tr>
             </thead>
 
             <tbody>
             <tr class="even">
                 <td>
-                    <span>Disable output:</span>
+                    <span><?php echo __('Disable output:'); ?></span>
                 </td>
                 <td>
                     <select name="output[disabled]" id="disabled" class="select admin__control-select">
@@ -78,7 +78,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>IP Range:</span>
+                    <span><?php echo __('IP Range:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['output']['iprange']; ?>" name="output[iprange]" id="iprange">
@@ -96,7 +96,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Skin:</span>
+                    <span><?php echo __('Skin:'); ?></span>
                 </td>
                 <td>
                     <select name="output[skin]" id="skin" class="select admin__control-select">
@@ -123,7 +123,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Destination:</span>
+                    <span><?php echo __('Destination:'); ?></span>
                 </td>
                 <td>
                     <select name="output[destination]" id="destination" class="select admin__control-select">
@@ -150,7 +150,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Maximum files in the logfolder:</span>
+                    <span><?php echo __('Maximum files in the logfolder:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['output']['maxfiles']; ?>" name="output[maxfiles]" id="maxfiles">
@@ -171,21 +171,20 @@
     </div>
 
     <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
-        <h3>Runtime</h3>
-
+        <h3><?php echo __('Runtime'); ?></h3>
         <table class="data-grid">
             <thead>
             <tr>
-                <th class="data-grid-th" >Description</th>
-                <th class="data-grid-th" >Setting</th>
-                <th class="data-grid-th" >Use factory settings</th>
+                <th class="data-grid-th kleft"><?php echo __('Description'); ?></th>
+                <th class="data-grid-th"><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright"><?php echo __('Use factory settings'); ?></th>
             </tr>
             </thead>
 
             <tbody>
             <tr class="even">
                 <td>
-                    <span>Try to detect AJAX requests:</span>
+                    <span><?php echo __('Try to detect AJAX requests:'); ?></span>
                 </td>
                 <td>
                     <select name="runtime[detectAjax]" id="detectAjax" class="select admin__control-select">
@@ -208,7 +207,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Maximum nesting level for objects and arrays:</span>
+                    <span><?php echo __('Maximum nesting level for objects and arrays:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['runtime']['level']; ?>" name="runtime[level]" id="level">
@@ -226,7 +225,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Maximum amount of calls:</span>
+                    <span><?php echo __('Maximum amount of calls:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['runtime']['maxCall']; ?>" name="runtime[maxCall]" id="maxCall">
@@ -244,7 +243,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Minimum amout of memory [MB]</span>
+                    <span><?php echo __('Minimum amout of memory [MB]:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['runtime']['memoryLeft']; ?>" name="runtime[memoryLeft]" id="memoryLeft">
@@ -262,7 +261,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Maximum Runtime [Seconds]</span>
+                    <span><?php echo __('Maximum Runtime [Seconds]:'); ?></span>
                 </td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['runtime']['maxRuntime']; ?>" name="runtime[maxRuntime]" id="maxRuntime">
@@ -280,7 +279,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Use scope analysis:</span>
+                    <span><?php echo __('Use scope analysis:'); ?></span>
                 </td>
                 <td>
                     <select name="runtime[useScopeAnalysis]" id="useScopeAnalysis" class="select admin__control-select">
@@ -311,21 +310,20 @@
     </div>
 
     <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
-        <h3>Properties</h3>
-
+        <h3><?php echo __('Properties'); ?></h3>
         <table class="data-grid">
             <thead>
             <tr>
-                <th class="data-grid-th" >Description</th>
-                <th class="data-grid-th" >Setting</th>
-                <th class="data-grid-th" >Use factory settings</th>
+                <th class="data-grid-th kleft" ><?php echo __('Description'); ?></th>
+                <th class="data-grid-th" ><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright" ><?php echo __('Use factory settings'); ?></th>
             </tr>
             </thead>
 
             <tbody>
             <tr class="even">
                 <td>
-                    <span>Analyse protected properties:</span>
+                    <span><?php echo __('Analyse protected properties:'); ?></span>
                 </td>
                 <td>
                     <select name="properties[analyseProtected]" id="analyseProtected" class="select admin__control-select">
@@ -352,7 +350,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Analyse private properties:</span>
+                    <span><?php echo __('Analyse private properties:'); ?></span>
                 </td>
                 <td>
                     <select name="properties[analysePrivate]" id="analysePrivate" class="select admin__control-select">
@@ -379,7 +377,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Analyse constants:</span>
+                    <span><?php echo __('Analyse constants:'); ?></span>
                 </td>
                 <td>
                     <select name="properties[analyseConstants]" id="analyseConstants" class="select admin__control-select">
@@ -406,7 +404,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Analyse traversable data:</span>
+                    <span><?php echo __('Analyse traversable data:'); ?></span>
                 </td>
                 <td>
                     <select name="properties[analyseTraversable]" id="analyseTraversable" class="select admin__control-select">
@@ -437,20 +435,20 @@
     </div>
 
     <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
-        <h3>Methods</h3>
+        <h3><?php echo __('Methods'); ?></h3>
         <table class="data-grid">
             <thead>
             <tr>
-                <th class="data-grid-th" >Description</th>
-                <th class="data-grid-th" >Setting</th>
-                <th class="data-grid-th" >Use factory settings</th>
+                <th class="data-grid-th kleft" ><?php echo __('Description'); ?></th>
+                <th class="data-grid-th" ><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright" ><?php echo __('Use factory settings'); ?></th>
             </tr>
             </thead>
 
             <tbody>
             <tr class="even">
                 <td>
-                    <span>Analyse protected class methods:</span>
+                    <span><?php echo __('Analyse protected class methods:'); ?></span>
                 </td>
                 <td>
                     <select name="methods[analyseProtectedMethods]" id="analyseProtectedMethods" class="select admin__control-select">
@@ -477,7 +475,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Analyse private class methods:</span>
+                    <span><?php echo __('Analyse private class methods:'); ?></span>
                 </td>
                 <td>
                     <select name="methods[analysePrivateMethods]" id="analysePrivateMethods" class="select admin__control-select">
@@ -504,7 +502,7 @@
             </tr>
             <tr class="even">
                 <td>
-                    <span>Analyse getter methods:</span>
+                    <span><?php echo __('Analyse getter methods:'); ?></span>
                 </td>
                 <td>
                     <select name="methods[analyseGetter]" id="analyseGetter" class="select admin__control-select">
@@ -533,7 +531,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>List of debug methods to poll for data:</span>
+                    <span><?php echo __('List of debug methods to poll for data:'); ?></span>
                 </td>
                 <td>
                     <input size="35" type="text" class="admin__control-text" value="<?php echo $settings['methods']['debugMethods']; ?>" name="methods[debugMethods]" id="debugMethods">
@@ -554,20 +552,20 @@
     </div>
 
     <div class="admin__data-grid-wrap admin__data-grid-wrap-static">
-        <h3>Error Handling and Backtrace</h3>
+        <h3><?php echo __('Error Handling and Backtrace'); ?></h3>
         <table class="data-grid">
             <thead>
             <tr>
-                <th class="data-grid-th" >Description</th>
-                <th class="data-grid-th" >Setting</th>
-                <th class="data-grid-th" >Use factory settings</th>
+                <th class="data-grid-th kleft" ><?php echo __('Description'); ?></th>
+                <th class="data-grid-th" ><?php echo __('Setting'); ?></th>
+                <th class="data-grid-th kright" ><?php echo __('Use factory settings'); ?></th>
             </tr>
             </thead>
 
             <tbody>
             <tr class="even">
                 <td>
-                    <span>Register fatal error handler automatically:</span>
+                    <span><?php echo __('Register fatal error handler automatically:'); ?></span>
                 </td>
                 <td>
                     <select name="backtraceAndError[registerAutomatically]" id="registerAutomatically" class="select admin__control-select">
@@ -593,9 +591,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    <span>Maximum count of steps in the backtrace</span>
-                </td>
+                <td><span><?php echo __('Maximum count of steps in the backtrace:'); ?></span></td>
                 <td>
                     <input type="text" class="admin__control-text" value="<?php echo $settings['backtraceAndError']['maxStepNumber']; ?>" name="backtraceAndError[maxStepNumber]" id="maxStepNumber">
                     <label for="maxStepNumber"></label>
@@ -625,19 +621,12 @@
 
         var toggle = function (checkbox) {
             var id = checkbox.id.split('.');
-            if (id[1] != 'undefined') {
+            if (id[1] !== 'undefined') {
                 var element = document.getElementById(id[1]);
             }
 
-            if (typeof element === 'object' && element != 'undefined' && element != null) {
-
-
-                if (checkbox.checked) {
-                    element.disabled = true;
-                }
-                else {
-                    element.disabled = false;
-                }
+            if (typeof element === 'object' && element !== 'undefined' && element !== null) {
+                element.disabled = checkbox.checked;
             }
         };
 
@@ -649,17 +638,8 @@
             }, true);
         }
 
-        var savebutton = document.getElementById('editconfig_save');
-        if (typeof savebutton === 'object' && savebutton != 'undefined' && savebutton != null) {
-            savebutton.addEventListener('click', function () {
-                var form = document.getElementById('editconfig');
-                if (typeof form === 'object' && form != 'undefined' && form != null) {
-                    form.submit();
-                }
-            }, true);
-        }
     })();
-    
+
 
     // Submit the form above. Is used by the toobyr button
     // @see Brainworxx\M2krexx\Block\Adminhtml\Config\Edit
