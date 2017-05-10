@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <!-- Headline in the system menu -->
-        <add id="Brainworxx_M2krexx::config_edit" title="kreXX Settings" translate="title" module="Brainworxx_M2krexx" sortOrder="100"  parent="Magento_Backend::system_other_settings" resource="Brainworxx_M2krexx::configure" action="m2krexx/config/edit"/>
+        <add id="Brainworxx_M2krexx::config_edit" title="kreXX Settings" module="Brainworxx_M2krexx" sortOrder="100"  parent="Magento_Backend::system_other_settings" resource="Brainworxx_M2krexx::configure" action="m2krexx/config/edit"/>
     </menu>
 </config>
 
