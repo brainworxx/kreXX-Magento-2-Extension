@@ -35,7 +35,9 @@
 namespace Brainworxx\Krexx\Analyse\Routing;
 
 use Brainworxx\Krexx\Analyse\Model;
+use Brainworxx\Krexx\Controller\AbstractController;
 use Brainworxx\Krexx\Service\Factory\Pool;
+use Magento\Framework\Indexer\AbstractProcessor;
 
 /**
  * "Routing" for kreXX
@@ -77,112 +79,112 @@ class Routing extends AbstractRouting
     public function analysisHub(Model $model)
     {
         // Check memory and runtime.
-        if (!$this->pool->emergencyHandler->checkEmergencyBreak()) {
+        if ($this->pool->emergencyHandler->checkEmergencyBreak()) {
             return '';
         }
         $data = $model->getData();
 
-        // Check nesting level
-        $this->pool->emergencyHandler->upOneNestingLevel();
-        if (is_array($data) || is_object($data)) {
-            if ($this->pool->emergencyHandler->checkNesting()) {
-                $this->pool->emergencyHandler->downOneNestingLevel();
-                $text = gettype($data) . ' => ' . $this->pool->messages->getHelp('maximumLevelReached');
-                $model->setData($text);
-                return $this->processString->process($model);
-            }
-        }
-
-        // Check for recursion.
-        if (is_object($data) || is_array($data)) {
-            if ($this->pool->recursionHandler->isInHive($data)) {
-                // Render recursion.
-                if (is_object($data)) {
-                    $type = get_class($data);
-                } else {
-                    // Must be the globals array.
-                    $type = '$GLOBALS';
-                }
-                $model->setDomid($this->generateDomIdFromObject($data))
-                    ->setNormal($type);
-                $result = $this->pool->render->renderRecursion($model);
-                $this->pool->emergencyHandler->downOneNestingLevel();
-                return $result;
-            }
-            // Remember that we've been here before.
-            $this->pool->recursionHandler->addToHive($data);
-        }
-
-        // Object?
-        if (is_object($data)) {
-            // We need to check if this is an object first.
-            // When calling is_a('myClass', 'anotherClass') the
-            // autoloader is triggered, trying to load 'myClass', although
-            // it is just a string.
-            if (is_a($data, '\\Closure')) {
-                // Closures are handled differently than normal objects
-                $result = $this->processClosure->process($model);
-                $this->pool->emergencyHandler->downOneNestingLevel();
-                return $result;
-            } else {
-                // Normal object.
-                $result = $this->processObject->process($model);
-                $this->pool->emergencyHandler->downOneNestingLevel();
-                return $result;
-            }
-        }
-
-        // Array?
-        if (is_array($data)) {
-            $result = $this->processArray->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
-        }
-
-        // Resource?
-        if (is_resource($data)) {
-            $result = $this->processResource->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
-        }
-
         // String?
         if (is_string($data)) {
-            $result = $this->processString->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
-        }
-
-        // Float?
-        if (is_float($data)) {
-            $result = $this->processFloat->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
+            return $this->processString->process($model);
         }
 
         // Integer?
         if (is_int($data)) {
-            $result = $this->processInteger->process($model);
+            return $this->processInteger->process($model);
+        }
+
+        // Null ?
+        if (is_null($data)) {
+            return $this->processNull->process($model);
+        }
+
+        if (is_array($data) || is_object($data)) {
+            // Check nesting level
+            $this->pool->emergencyHandler->upOneNestingLevel();
+
+            if ($this->pool->emergencyHandler->checkNesting()) {
+                $this->pool->emergencyHandler->downOneNestingLevel();
+                $text = $this->pool->messages->getHelp('maximumLevelReached2');
+                $model->setData($text)
+                    ->setNormal($this->pool->messages->getHelp('maximumLevelReached1'))
+                    ->setType(gettype($data))
+                    ->hasExtras();
+                // Render it directly.
+                return $this->pool->render->renderSingleChild($model);
+            }
+            // Handle the non simple types like array and object.
+            $result = $this->handleNoneSimpleTypes($data, $model);
             $this->pool->emergencyHandler->downOneNestingLevel();
             return $result;
         }
 
         // Boolean?
         if (is_bool($data)) {
-            $result = $this->processBoolean->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
+            return $this->processBoolean->process($model);
         }
 
-        // Null ?
-        if (is_null($data)) {
-            $result = $this->processNull->process($model);
-            $this->pool->emergencyHandler->downOneNestingLevel();
-            return $result;
+        // Float?
+        if (is_float($data)) {
+            return $this->processFloat->process($model);
+        }
+
+        // Resource?
+        if (is_resource($data)) {
+            return $this->processResource->process($model);
         }
 
         // Still here? This should not happen. Return empty string, just in case.
-        $this->pool->emergencyHandler->downOneNestingLevel();
         return '';
+    }
+
+    /**
+     * Routing of objects and arrays.
+     *
+     * @param object|array $data
+     *   The object / array we are analysing.
+     * @param \Brainworxx\Krexx\Analyse\Model $model
+     *   The already prepared model.
+     *
+     * @return string
+     *   The rendered HTML code.
+     */
+    protected function handleNoneSimpleTypes($data, Model $model)
+    {
+        if ($this->pool->recursionHandler->isInHive($data)) {
+            // Render recursion.
+            if (is_object($data)) {
+                $type = get_class($data);
+            } else {
+                // Must be the globals array.
+                $type = '$GLOBALS';
+            }
+
+
+            return $this->pool->render->renderRecursion($model
+                ->setDomid($this->generateDomIdFromObject($data))
+                ->setNormal($type));
+        }
+
+        if (is_object($data)) {
+            // Object?
+            // Remember that we've been here before.
+            $this->pool->recursionHandler->addToHive($data);
+
+            // We need to check if this is an object first.
+            // When calling is_a('myClass', 'anotherClass') the
+            // autoloader is triggered, trying to load 'myClass', although
+            // it is just a string.
+            if (is_a($data, '\\Closure')) {
+                // Closures are handled differently than normal objects
+                return $this->processClosure->process($model);
+            }
+            // Normal object.
+            return $this->processObject->process($model);
+        }
+
+        // Must be an array.
+        return $this->processArray->process($model);
+
     }
 }

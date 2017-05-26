@@ -181,12 +181,12 @@ class SaveEdit extends Action
         }
 
         // Now we should write the file!
-        $callerFinder  = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Caller\\CallerFinder');
+        $fileService  = $pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
         if ($all_ok) {
             if ($this->ioFile->write($filepath, $ini) === false) {
                 $all_ok = false;
                 $pool->messages->addMessage('Configuration file ' .
-                    $callerFinder->filterFilePath($filepath) .
+                    $fileService->filterFilePath($filepath) .
                     ' is not writeable!');
             }
         }
@@ -199,7 +199,7 @@ class SaveEdit extends Action
         } else {
             $this->messageManager->addSuccess(
                 __('The settings were saved to:') . '<br />' .
-                $callerFinder->filterFilePath($filepath)
+                $fileService->filterFilePath($filepath)
             );
         }
 

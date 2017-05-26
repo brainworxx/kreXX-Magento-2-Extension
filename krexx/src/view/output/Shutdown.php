@@ -91,11 +91,10 @@ class Shutdown extends AbstractOutput
     public function shutdownCallback()
     {
         // Check for CLI and messages.
-        if (php_sapi_name() === "cli") {
-            $messages = $this->pool->messages->outputMessages();
+        if (php_sapi_name() === 'cli') {
             // Since we are in CLI mode, these messages are not in HTML.
             // We can output them right away.
-            echo $messages;
+            echo $this->pool->messages->outputMessages();
         }
 
         // Output our chunks.

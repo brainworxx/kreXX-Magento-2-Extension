@@ -97,7 +97,7 @@ class Dynamicgetter extends ThroughGetter
 
             // And send the result on it's way.
             $output .= $this->pool
-                    ->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Routing')
+                    ->routing
                     ->analysisHub($model);
         }
 
@@ -115,16 +115,17 @@ class Dynamicgetter extends ThroughGetter
     protected function getTheUnderscoreDataArray($ref)
     {
         $data = array();
-        try {
-            $refProp = $ref->getProperty('_data');
-            $refProp->setAccessible(true);
-            $data = $refProp->getValue($this->parameters['data']);
-            if (!is_array($data)) {
-                // No Properties, it's empty.
-                $data = array();
+
+        if (is_a($this->parameters['data'], '\\Magento\\Framework\\DataObject')) {
+            if ($ref->hasProperty('_data')) {
+                $refProp = $ref->getProperty('_data');
+                $refProp->setAccessible(true);
+                $data = $refProp->getValue($this->parameters['data']);
+                if (!is_array($data)) {
+                    // No Properties, it's empty.
+                    $data = array();
+                }
             }
-        } catch (\ReflectionException $e) {
-            // Do nothing.
         }
 
         return $data;

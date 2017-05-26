@@ -59,7 +59,7 @@ class Config extends \Brainworxx\Krexx\Service\Config\Config
         ),
         'runtime' => array(
             'detectAjax' => 'true',
-            'level' => '4',
+            'level' => '5',
             'maxCall' => '10',
             'maxRuntime' => '60',
             'memoryLeft' => '64',

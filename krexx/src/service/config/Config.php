@@ -73,6 +73,8 @@ class Config extends Fallback
      */
     public $settings = array();
 
+    public $debugFuncList = array();
+
     /**
      * Injection the pool and loading the configuration.
      *
@@ -97,6 +99,8 @@ class Config extends Fallback
             // No kreXX for you!
             $this->setDisabled(true);
         }
+
+        $this->debugFuncList = explode(',', $this->getSetting('debugMethods'));
     }
 
     /**
@@ -107,7 +111,9 @@ class Config extends Fallback
      */
     public function setDisabled($value)
     {
-        $this->settings['disabled']->setValue($value);
+        $this->settings['disabled']
+            ->setValue($value)
+            ->setSource('Internal flow');
     }
 
     /**
@@ -149,12 +155,7 @@ class Config extends Fallback
      */
     public function getSetting($name)
     {
-        if (isset($this->settings[$name])) {
-            return $this->settings[$name]->getValue();
-        } else {
-            return null;
-        }
-
+        return $this->settings[$name]->getValue();
     }
 
     /**
@@ -216,7 +217,7 @@ class Config extends Fallback
     protected function getConfigValue($section, $name)
     {
         // Check if we already have this value.
-        if (!empty($this->settings[$name])) {
+        if (isset($this->settings[$name])) {
             return $this->settings[$name]->getValue();
         }
 
@@ -280,56 +281,62 @@ class Config extends Fallback
     {
         static $config = array();
 
-        // Not loaded?
-        if (!isset($config[$parameterName])) {
-            // Get the human readable stuff from the ini file.
-            $value = $this->getConfigFromFile('feEditing', $parameterName);
-            // Is it set?
-            if (!is_null($value)) {
-                // We need to translate it to a "real" setting.
-                // Get the html control name.
-                switch ($parameterName) {
-                    case 'maxfiles':
-                        $type = 'Input';
-                        break;
-
-                    default:
-                        // Nothing special, we get our value from the config class.
-                        $type = $this->feConfigFallback[$parameterName]['type'];
-                }
-                // Stitch together the setting.
-                switch ($value) {
-                    case 'none':
-                        $type = 'None';
-                        $editable = 'false';
-                        break;
-
-                    case 'display':
-                        $editable = 'false';
-                        break;
-
-                    case 'full':
-                        $editable = 'true';
-                        break;
-
-                    default:
-                        // Unknown setting.
-                        // Fallback to no display, just in case.
-                        $type = 'None';
-                        $editable = 'false';
-                        break;
-                }
-                $result = array(
-                    'type' => $type,
-                    'editable' => $editable,
-                );
-                // Remember the setting.
-                $config[$parameterName] = $result;
-            }
-        }
+        // Loaded?
         if (isset($config[$parameterName])) {
             return $config[$parameterName];
         }
+
+        // Get the human readable stuff from the ini file.
+        $value = $this->getConfigFromFile('feEditing', $parameterName);
+
+        // Is it set?
+        if (!is_null($value)) {
+            // We need to translate it to a "real" setting.
+            // Get the html control name.
+            switch ($parameterName) {
+                case 'maxfiles':
+                    $type = 'Input';
+                    break;
+
+                default:
+                    // Nothing special, we get our value from the config class.
+                    $type = $this->feConfigFallback[$parameterName]['type'];
+            }
+            // Stitch together the setting.
+            switch ($value) {
+                case 'none':
+                    $type = 'None';
+                    $editable = 'false';
+                    break;
+
+                case 'display':
+                    $editable = 'false';
+                    break;
+
+                case 'full':
+                    $editable = 'true';
+                    break;
+
+                default:
+                    // Unknown setting.
+                    // Fallback to no display, just in case.
+                    $type = 'None';
+                    $editable = 'false';
+                    break;
+            }
+            $result = array(
+                'type' => $type,
+                'editable' => $editable,
+            );
+            // Remember the setting.
+            $config[$parameterName] = $result;
+        }
+
+        // Do we have a value now?
+        if (isset($config[$parameterName])) {
+            return $config[$parameterName];
+        }
+
         // Still here?
         return null;
     }
@@ -406,8 +413,7 @@ class Config extends Fallback
         // Do we have a value in the cookies?
         if (isset($config[$name]) && $this->security->evaluateSetting($group, $name, $config[$name])) {
             // We escape them, just in case.
-            $value = htmlspecialchars($config[$name]);
-            return $value;
+            return htmlspecialchars($config[$name]);
         }
 
         // Still here?
@@ -437,7 +443,7 @@ class Config extends Fallback
                 }
             }
             // Check for CLI.
-            if (php_sapi_name() === "cli") {
+            if (php_sapi_name() === 'cli') {
                 return true;
             }
         }
@@ -453,13 +459,13 @@ class Config extends Fallback
      */
     public function getChunkDir()
     {
-        if (!empty($GLOBALS['kreXXoverwrites']['directories']['chunks'])) {
-            // Return the Overwrites
-            return $GLOBALS['kreXXoverwrites']['directories']['chunks'] . DIRECTORY_SEPARATOR;
-        } else {
+        if (empty($GLOBALS['kreXXoverwrites']['directories']['chunks'])) {
             // Return the standard settings.
             return $this->pool->krexxDir . 'chunks' . DIRECTORY_SEPARATOR;
         }
+        // Return the Overwrites
+        return $GLOBALS['kreXXoverwrites']['directories']['chunks'] . DIRECTORY_SEPARATOR;
+
     }
 
     /**
@@ -470,12 +476,12 @@ class Config extends Fallback
      */
     public function getLogDir()
     {
-        if (!empty($GLOBALS['kreXXoverwrites']['directories']['log'])) {
-            // Return the Overwrites
-            return $GLOBALS['kreXXoverwrites']['directories']['log'] . DIRECTORY_SEPARATOR;
-        } else {
+        if (empty($GLOBALS['kreXXoverwrites']['directories']['log'])) {
+            // Return the standard settings.
             return $this->pool->krexxDir . 'log' . DIRECTORY_SEPARATOR;
         }
+        // Return the Overwrites
+        return $GLOBALS['kreXXoverwrites']['directories']['log'] . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -486,11 +492,11 @@ class Config extends Fallback
      */
     public function getPathToIniFile()
     {
-        if (!empty($GLOBALS['kreXXoverwrites']['directories']['config'])) {
-            // Return the Overwrites
-            return $GLOBALS['kreXXoverwrites']['directories']['config'] . DIRECTORY_SEPARATOR . 'Krexx.ini';
-        } else {
+        if (empty($GLOBALS['kreXXoverwrites']['directories']['config'])) {
+            // Return the standard settings.
             return $this->pool->krexxDir . 'config' . DIRECTORY_SEPARATOR . 'Krexx.ini';
         }
+        // Return the Overwrites
+        return $GLOBALS['kreXXoverwrites']['directories']['config'] . DIRECTORY_SEPARATOR . 'Krexx.ini';
     }
 }

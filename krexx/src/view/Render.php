@@ -68,7 +68,10 @@ class Render extends AbstractRender
                 $this->renderConnector($model->getConnector1()),
                 $this->renderHelp($model),
                 $this->renderConnector($model->getConnector2()),
-                $this->pool->codegenHandler->generateSource($model),
+                $this->generateDataAttribute(
+                    'source',
+                    $this->pool->codegenHandler->generateSource($model)
+                ),
             ),
             $this->getTemplateFileContent('recursion')
         );
@@ -109,11 +112,11 @@ class Render extends AbstractRender
      */
     public function renderFooter($caller, $configOutput, $configOnly = false)
     {
-        if (!isset($caller['file'])) {
-            // When we have no caller, we will not render it.
-            $caller = '';
-        } else {
+        if (isset($caller['file'])) {
             $caller = $this->renderCaller($caller['file'], $caller['line']);
+        } else {
+             // When we have no caller, we will not render it.
+            $caller = '';
         }
 
         return str_replace(
@@ -171,11 +174,9 @@ class Render extends AbstractRender
             );
         }
         // Stitching the classes together, depending on the types.
-        $typeArray = explode(' ', $model->getType());
         $typeClasses = '';
-        foreach ($typeArray as $typeClass) {
-            $typeClass = 'k' . $typeClass;
-            $typeClasses .= $typeClass . ' ';
+        foreach (explode(' ', $model->getType()) as $typeClass) {
+            $typeClasses .= 'k' . $typeClass . ' ';
         }
 
         // Generating our code and adding the Codegen button, if there is something
@@ -209,7 +210,7 @@ class Render extends AbstractRender
                 '{codewrapper2}',
                 ),
             array(
-                $gensource,
+                $this->generateDataAttribute('source', $gensource),
                 $sourcebutton,
                 $partExpand,
                 $partCallable,
@@ -221,8 +222,8 @@ class Render extends AbstractRender
                 $this->renderHelp($model),
                 $this->renderConnector($model->getConnector1()),
                 $model->getConnector2(),
-                $this->pool->codegenHandler->generateWrapper1(),
-                $this->pool->codegenHandler->generateWrapper2(),
+                $this->generateDataAttribute('codewrapper1', $this->pool->codegenHandler->generateWrapper1()),
+                $this->generateDataAttribute('codewrapper2', $this->pool->codegenHandler->generateWrapper2()),
             ),
             $this->getTemplateFileContent('singleChild')
         );
@@ -235,14 +236,13 @@ class Render extends AbstractRender
     public function renderExpandableChild(Model $model, $isExpanded = false)
     {
         // Check for emergency break.
-        if (!$this->pool->emergencyHandler->checkEmergencyBreak()) {
+        if ($this->pool->emergencyHandler->checkEmergencyBreak()) {
             return '';
         }
 
         // Explode the type to get the class names right.
-        $types = explode(' ', $model->getType());
         $cssType = '';
-        foreach ($types as $singleType) {
+        foreach (explode(' ', $model->getType()) as $singleType) {
             $cssType .= ' k' . $singleType;
         }
 
@@ -287,13 +287,13 @@ class Render extends AbstractRender
                 $model->getNormal(),
                 $this->renderHelp($model),
                 $this->renderConnector($model->getConnector1()),
-                $this->renderConnector($model->getConnector2()),
-                $gencode,
+                $this->renderConnector($model->getConnector2(128)),
+                $this->generateDataAttribute('source', $gencode),
                 $sourceButton,
                 $expandedClass,
                 $this->pool->chunks->chunkMe($this->renderNest($model, $isExpanded)),
-                $this->pool->codegenHandler->generateWrapper1(),
-                $this->pool->codegenHandler->generateWrapper2(),
+                $this->generateDataAttribute('codewrapper1', $this->pool->codegenHandler->generateWrapper1()),
+                $this->generateDataAttribute('codewrapper1', $this->pool->codegenHandler->generateWrapper2()),
             ),
             $this->getTemplateFileContent('expandableChildNormal')
         );
@@ -315,12 +315,12 @@ class Render extends AbstractRender
         if ($model->getType() === 'Select') {
             // Here we store what the list of possible values.
             switch ($model->getData()) {
-                case "destination":
+                case 'destination':
                     // At php shutdown, logfile or direct after analysis.
                     $valueList = array('browser', 'file');
                     break;
 
-                case "skin":
+                case 'skin':
                     // Get a list of all skin folders.
                     $valueList = $this->getSkinList();
                     break;

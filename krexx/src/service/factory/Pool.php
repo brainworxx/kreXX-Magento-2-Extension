@@ -34,7 +34,6 @@
 
 namespace Brainworxx\Krexx\Service\Factory;
 
-use Brainworxx\Krexx\Analyse\Caller\AbstractCaller;
 use Brainworxx\Krexx\Analyse\Scope;
 use Brainworxx\Krexx\Service\Config\Config;
 use Brainworxx\Krexx\Service\Flow\Emergency;
@@ -45,6 +44,7 @@ use Brainworxx\Krexx\Analyse\Code\Codegen;
 use Brainworxx\Krexx\View\Messages;
 use Brainworxx\Krexx\View\Render;
 use Brainworxx\Krexx\Analyse\Routing\Routing;
+use Brainworxx\Krexx\Service\Misc\File;
 
 /**
  * Here we store all classes that we need.
@@ -138,7 +138,7 @@ class Pool extends Factory
     /**
      * Initializes all needed classes.
      *
-     * @param $krexxDir
+     * @param string $krexxDir
      *   The directory, where kreXX is stored.
      */
     public function __construct($krexxDir)
@@ -151,7 +151,7 @@ class Pool extends Factory
      * (Re)initializes everything in the pool, in case in-runtime
      * factory overwrites.
      *
-     * @param $krexxDir
+     * @param string $krexxDir
      *   The dir where kreXX is stored.
      */
     public function init($krexxDir)
@@ -187,10 +187,14 @@ class Pool extends Factory
      */
     protected function checkEnvironment()
     {
+        /** @var File $fileService */
+        $fileService = $this->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
+
         // Check chunk folder is writable.
         // If not, give feedback!
         $chunkFolder = $this->config->getChunkDir();
         if (!is_writeable($chunkFolder)) {
+            $chunkFolder = $fileService->filterFilePath($chunkFolder);
             $this->messages->addMessage(
                 'Chunksfolder ' . $chunkFolder . ' is not writable!' .
                 'This will increase the memory usage of kreXX significantly!',
@@ -205,6 +209,7 @@ class Pool extends Factory
         // If not, give feedback!
         $logFolder = $this->config->getLogDir();
         if (!is_writeable($logFolder)) {
+            $logFolder = $fileService->filterFilePath($logFolder);
             $this->messages->addMessage('Logfolder ' . $logFolder . ' is not writable !', 'critical');
             $this->messages->addKey('protected.folder.log', array($logFolder));
         }
@@ -242,7 +247,7 @@ class Pool extends Factory
     protected function initRenderer()
     {
         $skin = $this->config->getSetting('skin');
-        $classname = '\\Brainworxx\\Krexx\\View\\' . ucfirst($skin) . '\\Render';
+        $classname = 'Brainworxx\\Krexx\\View\\' . ucfirst($skin) . '\\Render';
         include_once $this->krexxDir . 'resources/skins/' . $skin . '/Render.php';
         $this->render =  $this->createClass($classname);
     }
@@ -284,20 +289,10 @@ class Pool extends Factory
             if ($code) {
                 // We are displaying sourcecode, so we need
                 // to do some formatting.
-                $sortingCallback = function ($n) {
-                    if ($n === 9) {
-                        // Replace TAB with two spaces, it's better readable that way.
-                        $result = '&nbsp;&nbsp;';
-                    } else {
-                        $result = "&#$n;";
-                    }
-                    return $result;
-                };
+                $sortingCallback = $sortingCallback = array($this, 'arrayMapCallbackCode');
             } else {
                 // No formatting.
-                $sortingCallback = function ($n) {
-                    return "&#$n;";
-                };
+                $sortingCallback = array($this, 'arrayMapCallbackNormal');
             }
 
             // Here we have another SPOF. When the string is large enough
@@ -323,5 +318,40 @@ class Pool extends Factory
         restore_error_handler();
 
         return $result;
+    }
+
+    /**
+     * Callback for the complete escaping of strings.
+     * Complete means every single char gets escaped.
+     * This one dies some extra stuff for code display.
+     *
+     * @param integer $n
+     *
+     * @return string
+     *   The extra escaped result for code.
+     */
+    protected function arrayMapCallbackCode($n)
+    {
+        if ($n === 9) {
+            // Replace TAB with two spaces, it's better readable that way.
+            $result = '&nbsp;&nbsp;';
+        } else {
+            $result = '&#' . $n . ';';
+        }
+        return $result;
+    }
+
+    /**
+     * Callback for the complete escaping of strings.
+     * Complete means every single char gets escaped.
+     *
+     * @param integer $n
+     *
+     * @return string
+     *   The extra escaped result.
+     */
+    protected function arrayMapCallbackNormal($n)
+    {
+        return '&#' . $n . ';';
     }
 }

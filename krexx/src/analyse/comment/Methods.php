@@ -44,6 +44,36 @@ class Methods extends AbstractComment
     /**
      * Get the method comment and resolve the inheritdoc.
      *
+     * Simple wrapper around the getMethodComment() to make sure
+     * we only escape it once!
+     *
+     * @param \ReflectionMethod $reflectionMethod
+     *   An already existing reflection of the method.
+     * @param \ReflectionClass $reflectionClass
+     *   An already existing reflection of the original class.
+     *
+     * @return string
+     *   The prettified and escaped comment.
+     */
+    public function getComment(\ReflectionFunctionAbstract $reflectionMethod, \ReflectionClass $reflectionClass = null)
+    {
+        // Do some static caching. The comment will not change during a run.
+        static $cache = array();
+        $cachingKey = $reflectionClass->getName() . '::' . $reflectionMethod->getName();
+
+        if (isset($cache[$cachingKey])) {
+            return $cache[$cachingKey];
+        }
+        // Cache not found. We need to generate this one.
+        $cache[$cachingKey] = $this->pool->encodeString(
+            $this->getMethodComment($reflectionMethod, $reflectionClass)
+        );
+        return $cache[$cachingKey];
+    }
+
+    /**
+     * Get the method comment and resolve the inheritdoc.
+     *
      * @param \ReflectionMethod $reflectionMethod
      *   An already existing reflection of the method.
      * @param \ReflectionClass $reflectionClass
@@ -52,49 +82,49 @@ class Methods extends AbstractComment
      * @return string
      *   The prettified comment.
      */
-    public function getComment($reflectionMethod, \ReflectionClass $reflectionClass = null)
+    protected function getMethodComment(\ReflectionMethod $reflectionMethod, \ReflectionClass $reflectionClass = null)
     {
         // Get a first impression.
         $comment = $this->prettifyComment($reflectionMethod->getDocComment());
 
         if ($this->checkComment($comment)) {
             // Found it!
-            return $this->pool->encodeString(trim($comment));
-        } else {
-            // Check for interfaces.
-            $comment = $this->getInterfaceComment($comment, $reflectionClass, $reflectionMethod->name);
+            return trim($comment);
         }
+
+        // Check for interfaces.
+        $comment = $this->getInterfaceComment($comment, $reflectionClass, $reflectionMethod->name);
 
         if ($this->checkComment($comment)) {
             // Found it!
-            return $this->pool->encodeString(trim($comment));
-        } else {
-            // Check for traits.
-            $comment = $this->getTraitComment($comment, $reflectionClass, $reflectionMethod->name);
+            return trim($comment);
         }
+
+        // Check for traits.
+        $comment = $this->getTraitComment($comment, $reflectionClass, $reflectionMethod->name);
 
         if ($this->checkComment($comment)) {
             // Found it!
-            return $this->pool->encodeString(trim($comment));
-        } else {
-            // Nothing on this level, we need to take a look at the parent.
-            try {
-                $parentReflection = $reflectionClass->getParentClass();
-                if (is_object($parentReflection)) {
-                    $parentMethod = $parentReflection->getMethod($reflectionMethod->name);
-                    if (is_object($parentMethod)) {
-                        // Going deeper into the rabid hole!
-                        $comment = trim($this->getComment($parentMethod, $parentReflection));
-                    }
+            return trim($comment);
+        }
+
+        // Nothing on this level, we need to take a look at the parent.
+        try {
+            $parentReflection = $reflectionClass->getParentClass();
+            if (is_object($parentReflection)) {
+                $parentMethod = $parentReflection->getMethod($reflectionMethod->name);
+                if (is_object($parentMethod)) {
+                    // Going deeper into the rabid hole!
+                    $comment = trim($this->getMethodComment($parentMethod, $parentReflection));
                 }
-            } catch (\ReflectionException $e) {
-                // Too deep, comment not found :-(
             }
-
-            // Still here? Tell the dev that we could not resolve the comment.
-            $comment = $this->replaceInheritComment($comment, '::could not resolve {@inheritdoc} comment::');
-            return $this->pool->encodeString(trim($comment));
+        } catch (\ReflectionException $e) {
+            // Too deep, comment not found :-(
         }
+
+        // Still here? Tell the dev that we could not resolve the comment.
+        $comment = $this->replaceInheritComment($comment, '::could not resolve the inherited comment comment::');
+        return trim($comment);
     }
 
     /**
@@ -120,28 +150,28 @@ class Methods extends AbstractComment
         // We need to check if we can get traits here.
         if (method_exists($reflection, 'getTraits')) {
             // Get the traits from this class.
-            $traitArray = $reflection->getTraits();
             // Now we should have an array with reflections of all
             // traits in the class we are currently looking at.
-            foreach ($traitArray as $trait) {
-                if (!$this->checkComment($originalComment)) {
-                    if ($trait->hasMethod($methodName)) {
-                        $traitMethod = $trait->getMethod($methodName);
-                        $traitComment = $this->prettifyComment($traitMethod->getDocComment());
-                        // Replace it.
-                        $originalComment = $this->replaceInheritComment($originalComment, $traitComment);
-                    }
-                } else {
+            foreach ($reflection->getTraits() as $trait) {
+                if ($this->checkComment($originalComment)) {
                     // Looks like we've resolved them all.
                     return $originalComment;
+                }
+                // We need to look further!
+                if ($trait->hasMethod($methodName)) {
+                    $traitComment = $this->prettifyComment(
+                        $trait->getMethod($methodName)->getDocComment()
+                    );
+                    // Replace it.
+                    $originalComment = $this->replaceInheritComment($originalComment, $traitComment);
                 }
             }
             // Return what we could resolve so far.
             return $originalComment;
-        } else {
-            // Wrong PHP version. Traits are not available.
-            return $originalComment;
         }
+
+        // Wrong PHP version. Traits are not available.
+        return $originalComment;
     }
 
     /**
@@ -162,23 +192,19 @@ class Methods extends AbstractComment
      */
     protected function getInterfaceComment($originalComment, \ReflectionClass $reflectionClass, $methodName)
     {
-
-        $interfaceArray = $reflectionClass->getInterfaces();
-        foreach ($interfaceArray as $interface) {
-            if (!$this->checkComment($originalComment)) {
-                if ($interface->hasMethod($methodName)) {
-                    $interfaceMethod = $interface->getMethod($methodName);
-                    $interfaceComment = $this->prettifyComment($interfaceMethod->getDocComment());
-                    // Replace it.
-                    $originalComment = $this->replaceInheritComment($originalComment, $interfaceComment);
-                }
-            } else {
+        foreach ($reflectionClass->getInterfaces() as $interface) {
+            if ($this->checkComment($originalComment)) {
                 // Looks like we've resolved them all.
                 return $originalComment;
+            }
+            // We need to look further.
+            if ($interface->hasMethod($methodName)) {
+                $interfaceComment = $this->prettifyComment($interface->getMethod($methodName)->getDocComment());
+                // Replace it.
+                $originalComment = $this->replaceInheritComment($originalComment, $interfaceComment);
             }
         }
         // Return what we could resolve so far.
         return $originalComment;
-
     }
 }

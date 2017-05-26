@@ -36,6 +36,7 @@ namespace Brainworxx\Krexx\Analyse\Callback\Iterate;
 
 use Brainworxx\Krexx\Analyse\Callback\AbstractCallback;
 use Brainworxx\Krexx\Analyse\Code\Connectors;
+use Brainworxx\Krexx\Analyse\Code\ReflectionParameterWrapper;
 
 /**
  * Methods analysis methods. :rolleyes:
@@ -81,16 +82,18 @@ class ThroughMethods extends AbstractCallback
             // Get parameters.
             $paramList = '';
             foreach ($reflectionMethod->getParameters() as $key => $reflectionParameter) {
-                $key++;
+                ++$key;
+                /** @var ReflectionParameterWrapper $reflectionParameterWrapper */
                 $reflectionParameterWrapper = $this->pool
                     ->createClass('Brainworxx\\Krexx\\Analyse\\Code\\ReflectionParameterWrapper')
                     ->setReflectionParameter($reflectionParameter);
-                $methodData['Parameter #' . $key] = $reflectionParameterWrapper;
 
-                $paramList .= $reflectionParameterWrapper . ', ';
+                $methodData['Parameter #' . $key] = $reflectionParameterWrapper->toString();
+                $paramList .= $reflectionParameterWrapper->toString() . ', ';
             }
+
             // Remove the ',' after the last char.
-            $paramList = '<small>' . trim($paramList, ', ') . '</small>';
+            $paramList = trim($paramList, ', ');
 
             // Get declaring keywords.
             $methodData['declaration keywords'] = $this->getDeclarationKeywords(
@@ -135,14 +138,18 @@ class ThroughMethods extends AbstractCallback
      */
     protected function getDeclarationPlace(\ReflectionMethod $reflectionMethod, \ReflectionClass $declaringClass)
     {
-        $filename = $declaringClass->getFileName();
-        if (is_null($filename) || empty($filename)) {
-            $result = ":: unable to determine declaration ::\n\nMaybe this is a predeclared class?";
-        } else {
-            $result = $filename . "\n";
-            $result .= 'in class: ' . $declaringClass->getName() . "\n";
-            $result .= 'in line: ' . $reflectionMethod->getStartLine();
+        /** @var \Brainworxx\Krexx\Service\Misc\File $fileService */
+
+        $filename = $this->pool
+            ->createClass('Brainworxx\\Krexx\\Service\\Misc\\File')
+            ->filterFilePath($declaringClass->getFileName());
+
+        if (empty($filename)) {
+            return ':: unable to determine declaration ::\n\nMaybe this is a predeclared class?';
         }
+        $result = $filename . "\n";
+        $result .= 'in class: ' . $declaringClass->getName() . "\n";
+        $result .= 'in line: ' . $reflectionMethod->getStartLine();
 
         return $result;
     }

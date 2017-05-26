@@ -89,8 +89,6 @@ class ThroughGetter extends AbstractCallback
     public function callMe()
     {
         $output = '';
-        /** @var \reflectionClass $ref */
-        $ref = $this->parameters['ref'];
 
         /** @var \ReflectionMethod $reflectionMethod */
         foreach ($this->parameters['methodList'] as $reflectionMethod) {
@@ -104,7 +102,7 @@ class ThroughGetter extends AbstractCallback
             $comments = nl2br($this
                 ->pool
                 ->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Methods')
-                ->getComment($reflectionMethod, $ref));
+                ->getComment($reflectionMethod, $this->parameters['ref']));
 
             /** @var Model $model */
             $model = $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
@@ -143,25 +141,22 @@ class ThroughGetter extends AbstractCallback
         if (empty($refProp)) {
             // Found nothing  :-(
             // We literally have no info. We need to tell the user.
-            $noInfoMessage = $this->pool->messages->getHelp('unknownValue');
-            $model->setNormal('unknown')
-                ->setType('unknown')
-                ->setData($noInfoMessage)
-                ->hasExtras();
+            $noInfoMessage = 'unknown';
+            $model->setType($noInfoMessage)
+                ->setNormal($noInfoMessage);
             // We render this right away, without any routing.
             return $this->pool->render->renderSingleChild($model);
-        } else {
-             // We've got ourselves a possible result!
-            $refProp->setAccessible(true);
-            $value = $refProp->getValue($this->parameters['data']);
-            $model->setData($value);
-            if (is_null($value)) {
-                // A NULL value might mean that the values does not
-                // exist, until the getter computes it.
-                $model->addToJson('hint', $this->pool->messages->getHelp('getterNull'));
-            }
-            return $this->pool->routing->analysisHub($model);
         }
+        // We've got ourselves a possible result!
+        $refProp->setAccessible(true);
+        $value = $refProp->getValue($this->parameters['data']);
+        $model->setData($value);
+        if (is_null($value)) {
+            // A NULL value might mean that the values does not
+            // exist, until the getter computes it.
+            $model->addToJson('hint', $this->pool->messages->getHelp('getterNull'));
+        }
+        return $this->pool->routing->analysisHub($model);
     }
 
     /**
@@ -261,13 +256,11 @@ class ThroughGetter extends AbstractCallback
             $reflectionMethod->getStartLine(),
             $reflectionMethod->getEndLine()
         );
+
         // Execute our search pattern.
         // Right now, we are trying to get to properties that way.
         // Later on, we may also try to parse deeper for stuff.
-        $pattern = array('return $this->', ';');
-        $findings = $this->findIt($pattern, $sourcecode);
-
-        foreach ($findings as $propertyName) {
+        foreach ($this->findIt(array('return $this->', ';'), $sourcecode) as $propertyName) {
             // Check if this is a property and return the first we find.
             if ($classReflection->hasProperty($propertyName)) {
                 return $classReflection->getProperty($propertyName);
@@ -277,7 +270,7 @@ class ThroughGetter extends AbstractCallback
             if ($classReflection->hasMethod($methodName)) {
                 // We need to be careful not to goo too deep, we might end up
                 // in a loop.
-                $this->deep++;
+                ++$this->deep;
                 if ($this->deep < 3) {
                     return $this->getReflectionProperty($classReflection, $classReflection->getMethod($methodName));
                 }
@@ -318,7 +311,7 @@ class ThroughGetter extends AbstractCallback
      * @return array
      *   The findings.
      */
-    protected function findIt($searchArray, $haystack)
+    protected function findIt(array $searchArray, $haystack)
     {
 
         // Defining our regex.
@@ -336,11 +329,7 @@ class ThroughGetter extends AbstractCallback
         preg_match_all($regex, $haystack, $findings);
 
         // Return the file name as well as stuff from the path.
-        $result = array();
-        foreach ($findings[0] as $name) {
-            $result[] =  $name;
-        }
-        return $result;
+        return $findings[0];
     }
 
     /**

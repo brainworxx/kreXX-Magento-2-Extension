@@ -52,7 +52,7 @@ use Brainworxx\Krexx\Service\Factory\Pool;
  *   We use '@@@' to mark a chunk key. This function escapes the @
  *   so we have no collusion with data from strings.
  *
- * @package Brainworxx\Krexx\Service\Misc
+ * @package Brainworxx\Krexx\View\Output
  */
 class Chunks
 {
@@ -105,6 +105,13 @@ class Chunks
     protected $chunkDir;
 
     /**
+     * Microtime stamp for chunk operations.
+     *
+     * @var string
+     */
+    protected $fileStamp;
+
+    /**
      * Injects the pool.
      *
      * @param Pool $pool
@@ -116,6 +123,8 @@ class Chunks
         $this->chunkDir = $pool->config->getChunkDir();
         $this->logDir = $pool->config->getLogDir();
         $this->fileService = $pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
+        $this->fileStamp = explode(' ', microtime());
+        $this->fileStamp = $this->fileStamp[1] . str_replace('0.', '', $this->fileStamp[0]);
     }
 
     /**
@@ -138,10 +147,10 @@ class Chunks
             $this->fileService->putFileContents($this->chunkDir . $key . '.Krexx.tmp', $string);
             // Return the first part plus the key.
             return '@@@' . $key . '@@@';
-        } else {
-            // Return the original, because it's too small.
-            return $string;
         }
+
+        // Return the original, because it's too small.
+        return $string;
     }
 
     /**
@@ -153,9 +162,9 @@ class Chunks
     protected function genKey()
     {
         static $counter = 0;
-        $counter++;
+        ++$counter;
 
-        return $this->fileService->fileStamp() . '_' . $counter;
+        return $this->fileStamp . '_' . $counter;
     }
 
     /**
@@ -175,18 +184,20 @@ class Chunks
     protected function dechunkMe($key)
     {
         $filename = $this->chunkDir . $key . '.Krexx.tmp';
-        if (is_writable($filename)) {
+        if (is_readable($filename)) {
             // Read the file.
             $string = $this->fileService->getFileContents($filename);
             // Delete it, we don't need it anymore.
-            unlink($filename);
-        } else {
-            // Huh, we can not fully access this one.
-            $string = 'Could not access chunk file ' . $filename;
-            $this->pool->messages->addMessage('Could not access chunk file ' . $filename);
-        }
+            $this->fileService->deleteFile($filename);
 
-        return $string;
+            return $string;
+        }
+        // Huh, we can not fully access this one.
+        $this->pool->messages->addMessage(
+            $this->pool->messages->getHelp('chunkserviceAccess') . $filename
+        );
+        return 'Could not access chunk file ' . $filename;
+
     }
 
     /**
@@ -240,8 +251,7 @@ class Chunks
         $this->cleanupOldLogs($this->logDir);
 
         // Determine the filename.
-        $timestamp = $this->fileService->fileStamp();
-        $filename = $this->logDir . $timestamp . '.Krexx.html';
+        $filename = $this->logDir . $this->fileStamp . '.Krexx.html';
         $chunkPos = strpos($string, '@@@');
 
         while ($chunkPos !== false) {
@@ -263,8 +273,11 @@ class Chunks
         // Save our metadata, so a potential backend module can display it.
         // We may or may not have already some output for this file.
         if (!empty($this->metadata)) {
+            // Remove the old metadata file. We still have all it's content
+            // available in $this->metadata.
+            $this->fileService->deleteFile($filename . '.json');
+            // Create a new metadata file with new info.
             $this->fileService->putFileContents($filename . '.json', json_encode($this->metadata));
-            $this->metadata = array();
         }
     }
 
@@ -276,20 +289,22 @@ class Chunks
         static $beenHere = false;
 
         // We only do this once.
-        if (!$beenHere) {
-            // Clean up leftover files.
-            $chunkList = glob($this->chunkDir . '*.Krexx.tmp');
-            if (!empty($chunkList)) {
-                foreach ($chunkList as $file) {
-                    // We delete everything that is older than one hour.
-                    if ((filemtime($file) + 3600) < time()) {
-                        unlink($file);
-                    }
-                }
-            }
+        if ($beenHere) {
+            return;
         }
 
         $beenHere = true;
+        // Clean up leftover files.
+        $chunkList = glob($this->chunkDir . '*.Krexx.tmp');
+        if (!empty($chunkList)) {
+            $now = time();
+            foreach ($chunkList as $file) {
+                // We delete everything that is older than 15 minutes.
+                if ((filemtime($file) + 900) < $now) {
+                    $this->fileService->deleteFile($file);
+                }
+            }
+        }
     }
 
     /**
@@ -301,23 +316,21 @@ class Chunks
     protected function cleanupOldLogs($logDir)
     {
         // Cleanup old logfiles to prevent a overflow.
-        $logList = glob($logDir . "*.Krexx.html");
-        if (!empty($logList)) {
-            array_multisort(array_map('filemtime', $logList), SORT_DESC, $logList);
-            $maxFileCount = (int)$this->pool->config->getSetting('maxfiles');
-            $count = 1;
-            // Cleanup logfiles.
-            foreach ($logList as $file) {
-                if ($count > $maxFileCount) {
-                    if (is_writable($file)) {
-                        unlink($file);
-                    }
-                    if (is_writable($file . '.json')) {
-                        unlink($file . '.json');
-                    }
-                }
-                $count++;
+        $logList = glob($logDir . '*.Krexx.html');
+        if (empty($logList)) {
+            return;
+        }
+
+        array_multisort(array_map('filemtime', $logList), SORT_DESC, $logList);
+        $maxFileCount = (int)$this->pool->config->getSetting('maxfiles');
+        $count = 1;
+        // Cleanup logfiles.
+        foreach ($logList as $file) {
+            if ($count > $maxFileCount) {
+                $this->fileService->deleteFile($file);
+                $this->fileService->deleteFile($file . '.json');
             }
+            ++$count;
         }
     }
 
@@ -344,5 +357,22 @@ class Chunks
     public function addMetadata($caller)
     {
         $this->metadata[] = $caller;
+    }
+
+    /**
+     * When we are done, delete all leftover chunks, just in case.
+     */
+    public function __destruct()
+    {
+        // Get a list of all chunk files from the run.
+        $chunkList = glob($this->chunkDir . $this->fileStamp . '_*');
+        if (empty($chunkList)) {
+            return;
+        }
+
+        // Delete them all!
+        foreach ($chunkList as $file) {
+            $this->fileService->deleteFile($file);
+        }
     }
 }

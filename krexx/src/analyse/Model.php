@@ -187,9 +187,8 @@ class Model
         if (is_object($this->callback)) {
             $this->callback->setParams($this->parameters);
             return $this->callback->callMe();
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -363,12 +362,15 @@ class Model
     /**
      * Getter for connector2.
      *
+     * @param integer $cap
+     *   Maximum length of all parameters. 0 means no cap.
+     *
      * @return string
      *   The second connector.
      */
-    public function getConnector2()
+    public function getConnector2($cap = 0)
     {
-        return $this->connectorService->getConnector2();
+        return $this->connectorService->getConnector2($cap);
     }
 
     /**

@@ -119,11 +119,9 @@ class DumpController extends AbstractController
                 ->setName($caller['varname'])
         );
 
-
-
         // Now that our analysis is done, we must check if there was an emergency
         // break.
-        if (!$this->pool->emergencyHandler->checkEmergencyBreak()) {
+        if ($this->pool->emergencyHandler->checkEmergencyBreak()) {
             return $this;
         }
 
@@ -134,8 +132,7 @@ class DumpController extends AbstractController
         $this->outputService->addChunkString($this->outputHeader($headline));
         $this->outputService->addChunkString($analysis);
         $this->outputService->addChunkString($footer);
-
-
+        
         return $this;
     }
 
@@ -154,7 +151,7 @@ class DumpController extends AbstractController
         // Did we use this one before?
         if (isset(self::$counterCache[$string])) {
             // Add another to the counter.
-            self::$counterCache[$string]++;
+            ++self::$counterCache[$string];
             self::$timekeeping['[' . self::$counterCache[$string] . ']' . $string] = microtime(true);
         } else {
             // First time counter, set it to 1.

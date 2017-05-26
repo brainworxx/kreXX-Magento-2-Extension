@@ -34,7 +34,6 @@
 
 namespace Brainworxx\Krexx\Analyse\Routing\Process;
 
-use Brainworxx\Krexx\Controller\AbstractController;
 use Brainworxx\Krexx\Service\Factory\Pool;
 
 /**
@@ -90,7 +89,7 @@ class ProcessBacktrace
             );
         }
 
-        for ($step = 1; $step <= $maxStep; $step++) {
+        for ($step = 1; $step <= $maxStep; ++$step) {
             $output .= $this->pool->render->renderExpandableChild(
                 $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
                     ->setName($step)

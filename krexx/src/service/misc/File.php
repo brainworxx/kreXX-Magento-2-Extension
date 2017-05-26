@@ -50,7 +50,7 @@ class File
      *
      * @param Pool $pool
      */
-    public function __construct($pool)
+    public function __construct(Pool $pool)
     {
         $this->pool = $pool;
     }
@@ -84,7 +84,7 @@ class File
                 $to = count($contentArray);
             }
 
-            for ($currentLineNo = $from; $currentLineNo <= $to; $currentLineNo++) {
+            for ($currentLineNo = $from; $currentLineNo <= $to; ++$currentLineNo) {
                 if (isset($contentArray[$currentLineNo])) {
                     // Add it to the result.
                     $realLineNo = $currentLineNo + 1;
@@ -148,7 +148,7 @@ class File
 
         // Do we have enough lines in there?
         if (count($cacheArray[$filename]) > $to) {
-            for ($currentLineNo = $from; $currentLineNo <= $to; $currentLineNo++) {
+            for ($currentLineNo = $from; $currentLineNo <= $to; ++$currentLineNo) {
                 $result .= $cacheArray[$filename][$currentLineNo];
             }
         }
@@ -172,7 +172,7 @@ class File
         if (is_readable($path)) {
             $size = filesize($path);
             if ($size > 0) {
-                $file = fopen($path, "r");
+                $file = fopen($path, 'r');
                 $result = fread($file, $size);
                 fclose($file);
             }
@@ -191,8 +191,6 @@ class File
      *   Path and filename.
      * @param string $string
      *   The string we want to write.
-     * @param bool $overwrite
-     *   Are we overwriting the file?
      */
     public function putFileContents($path, $string)
     {
@@ -229,22 +227,55 @@ class File
     }
 
     /**
-     * Returns the microtime timestamp for file operations.
+     * Tries to delete a file.
      *
-     * File operations are the logfiles and the chunk handling.
+     * @param string $filename
+     */
+    public function deleteFile($filename)
+    {
+        // Check if it is an actual file and if it is writeable.
+        if (is_file($filename)) {
+            set_error_handler(function () {
+                /* do nothing */
+            });
+            // Make sure it is unlinkable.
+            chmod($filename, 0777);
+            if (unlink($filename)) {
+                restore_error_handler();
+                return;
+            } else {
+                // We have a permission problem here!
+                $this->pool->messages->addMessage(
+                    $this->pool->messages->getHelp('fileserviceDelete') . $this->filterFilePath($filename)
+                );
+                restore_error_handler();
+            }
+        }
+    }
+
+    /**
+     * We will remove the $_SERVER['DOCUMENT_ROOT'] from the absolute
+     * path of the calling file.
+     * Return the original path, in case we can not determine the
+     * $_SERVER['DOCUMENT_ROOT']
+     *
+     * @param $path
+     *   The path we want to filter
      *
      * @return string
-     *   The timestamp itself.
+     *   The filtered path to the calling file.
      */
-    public function fileStamp()
+    public function filterFilePath($path)
     {
-        static $timestamp = 0;
-
-        if (empty($timestamp)) {
-            $timestamp = explode(" ", microtime());
-            $timestamp = $timestamp[1] . str_replace("0.", "", $timestamp[0]);
+        // There may or may not be a trailing '/'.
+        // We remove it, just in case, to make sure that we remove the doc root
+        // completely from the $path variable.
+        $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
+        if (isset($docRoot) && strpos($path, $docRoot) === 0) {
+            // Found it on position 0.
+            $path = '. . ./' . substr($path, strlen($docRoot) + 1);
         }
 
-        return $timestamp;
+        return $path;
     }
 }

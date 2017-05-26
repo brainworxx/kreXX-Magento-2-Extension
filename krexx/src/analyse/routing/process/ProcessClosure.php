@@ -35,6 +35,7 @@
 namespace Brainworxx\Krexx\Analyse\Routing\Process;
 
 use Brainworxx\Krexx\Analyse\Model;
+use Brainworxx\Krexx\Analyse\Code\ReflectionParameterWrapper;
 
 /**
  * Processing of closures.
@@ -65,15 +66,14 @@ class ProcessClosure extends AbstractProcess
 
         // Adding the sourcecode
         $highlight = $ref->getStartLine() -1;
-        $from = $highlight - 3;
-        $to = $ref->getEndLine() -1;
-        $file = $ref->getFileName();
         $result['source'] = $this->pool
             ->createClass('Brainworxx\\Krexx\\Service\\Misc\\File')
-            ->readSourcecode($file, $highlight, $from, $to);
+            ->readSourcecode($ref->getFileName(), $highlight, $highlight - 3, $ref->getEndLine() -1);
 
         // Adding the place where it was declared.
-        $result['declared in'] = $ref->getFileName() . "\n";
+        $result['declared in'] = $this->pool
+            ->createClass('Brainworxx\\Krexx\\Service\\Misc\\File')
+            ->filterFilePath($ref->getFileName()) . "\n";
         $result['declared in'] .= 'in line ' . $ref->getStartLine();
 
         // Adding the namespace, but only if we have one.
@@ -86,17 +86,18 @@ class ProcessClosure extends AbstractProcess
         $paramList = '';
 
         foreach ($ref->getParameters() as $key => $reflectionParameter) {
+            ++$key;
+            /** @var ReflectionParameterWrapper $reflectionParameterWrapper */
             $reflectionParameterWrapper = $this->pool
                 ->createClass('Brainworxx\\Krexx\\Analyse\\Code\\ReflectionParameterWrapper')
                 ->setReflectionParameter($reflectionParameter);
 
-
-            $result['Parameter #' . ($key + 1)] = $reflectionParameterWrapper;
-            $paramList .= $reflectionParameterWrapper . ', ';
+            $result['Parameter #' . $key] = $reflectionParameterWrapper->toString();
+            $paramList .= $reflectionParameterWrapper->toString() . ', ';
         }
 
         // Remove the ',' after the last char.
-        $paramList = '<small>' . trim($paramList, ', ') . '</small>';
+        $paramList = trim($paramList, ', ');
         $model->setType('closure')
             ->setNormal('. . .')
             ->setConnectorParameters($paramList)
