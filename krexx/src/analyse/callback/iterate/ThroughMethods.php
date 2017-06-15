@@ -36,7 +36,6 @@ namespace Brainworxx\Krexx\Analyse\Callback\Iterate;
 
 use Brainworxx\Krexx\Analyse\Callback\AbstractCallback;
 use Brainworxx\Krexx\Analyse\Code\Connectors;
-use Brainworxx\Krexx\Analyse\Code\ReflectionParameterWrapper;
 
 /**
  * Methods analysis methods. :rolleyes:
@@ -62,15 +61,15 @@ class ThroughMethods extends AbstractCallback
         /** @var \ReflectionClass $reflectionClass */
         $reflectionClass = $this->parameters['ref'];
 
+        $commentAnalysis = $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Methods');
+
         // Deep analysis of the methods.
         /* @var \ReflectionMethod $reflectionMethod */
         foreach ($this->parameters['data'] as $reflectionMethod) {
             $methodData = array();
 
             // Get the comment from the class, it's parents, interfaces or traits.
-            $methodComment = $this->pool
-                ->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Methods')
-                ->getComment($reflectionMethod, $reflectionClass);
+            $methodComment = $commentAnalysis->getComment($reflectionMethod, $reflectionClass);
             if (!empty($methodComment)) {
                 $methodData['comments'] = $methodComment;
             }
@@ -83,13 +82,9 @@ class ThroughMethods extends AbstractCallback
             $paramList = '';
             foreach ($reflectionMethod->getParameters() as $key => $reflectionParameter) {
                 ++$key;
-                /** @var ReflectionParameterWrapper $reflectionParameterWrapper */
-                $reflectionParameterWrapper = $this->pool
-                    ->createClass('Brainworxx\\Krexx\\Analyse\\Code\\ReflectionParameterWrapper')
-                    ->setReflectionParameter($reflectionParameter);
-
-                $methodData['Parameter #' . $key] = $reflectionParameterWrapper->toString();
-                $paramList .= $reflectionParameterWrapper->toString() . ', ';
+                $paramList .= $methodData['Parameter #' . $key] = $this->pool
+                    ->codegenHandler
+                    ->parameterToString($reflectionParameter);
             }
 
             // Remove the ',' after the last char.
@@ -140,12 +135,10 @@ class ThroughMethods extends AbstractCallback
     {
         /** @var \Brainworxx\Krexx\Service\Misc\File $fileService */
 
-        $filename = $this->pool
-            ->createClass('Brainworxx\\Krexx\\Service\\Misc\\File')
-            ->filterFilePath($declaringClass->getFileName());
+        $filename = $this->pool->fileService->filterFilePath($declaringClass->getFileName());
 
         if (empty($filename)) {
-            return ':: unable to determine declaration ::\n\nMaybe this is a predeclared class?';
+            return ":: unable to determine declaration ::\n\nMaybe this is a predeclared class?";
         }
         $result = $filename . "\n";
         $result .= 'in class: ' . $declaringClass->getName() . "\n";
@@ -185,7 +178,7 @@ class ThroughMethods extends AbstractCallback
         }
 
         if ($reflectionMethod->isPrivate()) {
-                $result .= ' private';
+            $result .= ' private';
         }
 
         if ($reflectionMethod->isProtected()) {

@@ -37,8 +37,6 @@ namespace Brainworxx\Krexx\Analyse\Callback\Iterate;
 use Brainworxx\Krexx\Analyse\Callback\AbstractCallback;
 use Brainworxx\Krexx\Analyse\Model;
 use Brainworxx\Krexx\Analyse\Code\Connectors;
-use Brainworxx\Krexx\Service\Factory\Pool;
-use Brainworxx\Krexx\Service\Misc\File;
 
 /**
  * Getter method analysis methods.
@@ -54,12 +52,6 @@ use Brainworxx\Krexx\Service\Misc\File;
  */
 class ThroughGetter extends AbstractCallback
 {
-    /**
-     * The file service, used for reading sourcecode.
-     *
-     * @var File
-     */
-    protected $fileService;
 
     /**
      * Here we memorize how deep we are inside the current deep analysis.
@@ -67,18 +59,6 @@ class ThroughGetter extends AbstractCallback
      * @var int
      */
     protected $deep = 0;
-
-    /**
-     * Injection the pool and getting  the file service.
-     *
-     * @param Pool $pool
-     */
-    public function __construct(Pool $pool)
-    {
-        parent::__construct($pool);
-
-        $this->fileService = $this->pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
-    }
 
     /**
      * Try to get the possible result of all getter methods.
@@ -89,6 +69,8 @@ class ThroughGetter extends AbstractCallback
     public function callMe()
     {
         $output = '';
+        /** @var \Brainworxx\Krexx\Analyse\comment\Methods $commentAnalysis */
+        $commentAnalysis = $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Methods');
 
         /** @var \ReflectionMethod $reflectionMethod */
         foreach ($this->parameters['methodList'] as $reflectionMethod) {
@@ -99,10 +81,7 @@ class ThroughGetter extends AbstractCallback
             // 1.) We have an actual value
             // 2.) We got NULL as a value
             // 3.) We were unable to get any info at all.
-            $comments = nl2br($this
-                ->pool
-                ->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Methods')
-                ->getComment($reflectionMethod, $this->parameters['ref']));
+            $comments = nl2br($commentAnalysis->getComment($reflectionMethod, $this->parameters['ref']));
 
             /** @var Model $model */
             $model = $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
@@ -161,6 +140,8 @@ class ThroughGetter extends AbstractCallback
 
     /**
      * We try to coax the reflection property from the current object.
+     *
+     * We try to guess the corresponding property in the class.
      *
      * @param \ReflectionClass $classReflection
      *   The reflection class oof the object we are analysing.
@@ -248,10 +229,29 @@ class ThroughGetter extends AbstractCallback
             return $classReflection->getProperty($propertyName);
         }
 
-        // Still here?!?
         // Time to do some deep stuff. We parse the sourcecode via regex!
-         // Read the sourcecode into a string.
-        $sourcecode = $this->fileService->readFile(
+        return $this->getReflectionPropertyDeep($classReflection, $reflectionMethod);
+    }
+
+    /**
+     * We try to coax the reflection property from the current object.
+     *
+     * This time we are analysing the source code itself!
+     *
+     * @param \ReflectionClass $classReflection
+     *   The reflection class oof the object we are analysing.
+     * @param \ReflectionMethod $reflectionMethod
+     *   The reflection ot the method of which we want to coax the result from
+     *   the class or sourcecode.
+     *
+     * @return \ReflectionProperty|null
+     *   Either the reflection of a possibly associated Property, or null to
+     *   indicate that we have found nothing.
+     */
+    protected function getReflectionPropertyDeep(\ReflectionClass $classReflection, \ReflectionMethod $reflectionMethod)
+    {
+        // Read the sourcecode into a string.
+        $sourcecode = $this->pool->fileService->readFile(
             $reflectionMethod->getFileName(),
             $reflectionMethod->getStartLine(),
             $reflectionMethod->getEndLine()
@@ -277,8 +277,7 @@ class ThroughGetter extends AbstractCallback
             }
         }
 
-        // Still nothing? Return null, to tell the main method that we were
-        // unable to get any info.
+        // Nothing?
         return null;
     }
 

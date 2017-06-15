@@ -70,23 +70,24 @@ class ProcessBacktrace
      *
      * @param array $backtrace
      *   The backtrace.
-     * @param int $offset
-     *   For some reason, we have an offset of -1 for fatal error backtrace
-     *   line number.
      *
      * @return string
      *   The rendered backtrace.
      */
-    public function process(array &$backtrace, $offset = 0)
+    public function process(array &$backtrace)
     {
         $output = '';
         $maxStep = (int) $this->pool->config->getSetting('maxStepNumber');
         $stepCount = count($backtrace);
 
+        // Remove steps according to the configuration.
         if ($maxStep < $stepCount) {
-            $this->pool->messages->addMessage(
-                'Omitted backtrace steps ' . ($maxStep + 1) . ' until ' . ($stepCount)
-            );
+            $this->pool->messages->addMessage('omittedBacktrace', array(($maxStep + 1), $stepCount));
+        }
+
+        // We will not analyse more steps than we actually have.
+        if ($maxStep > $stepCount) {
+            $maxStep = $stepCount;
         }
 
         for ($step = 1; $step <= $maxStep; ++$step) {
@@ -94,8 +95,7 @@ class ProcessBacktrace
                 $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
                     ->setName($step)
                     ->setType('Stack Frame')
-                    ->addParameter('data', $backtrace[$step])
-                    ->addParameter('offset', $offset)
+                    ->addParameter('data', $backtrace[$step - 1])
                     ->injectCallback(
                         $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Callback\\Analyse\\BacktraceStep')
                     )

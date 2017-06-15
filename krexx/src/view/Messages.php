@@ -34,12 +34,14 @@
 
 namespace Brainworxx\Krexx\View;
 
+use Brainworxx\Krexx\Service\Factory\Pool;
+
 /**
  * Messaging system.
  *
  * @package Brainworxx\Krexx\View
  */
-class Messages extends Help
+class Messages
 {
 
     /**
@@ -56,38 +58,48 @@ class Messages extends Help
      */
     protected $keys = array();
 
-
+    /**
+     * A simple array to hold the values.
+     *
+     * @var array
+     */
+    protected $helpArray = array();
 
     /**
-     * The message we want to add. It will be displayed in the output.
+     * Here we store all relevant data.
      *
-     * @param string $message
-     *   The message itself.
-     * @param string $class
-     *   The class of the message.
+     * @var Pool
      */
-    public function addMessage($message, $class = 'normal')
+    protected $pool;
+
+    /**
+     * Injects the pool and reads the language file.
+     *
+     * @param Pool $pool
+     *   The pool, where we store the classes we need.
+     */
+    public function __construct(Pool $pool)
     {
-        $this->messages[$message] = array(
-            'message' => $message,
-            'class' => $class
+        $this->pool = $pool;
+        $file = $pool->krexxDir . 'resources' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . 'Help.ini';
+        $this->helpArray = (array)parse_ini_string(
+            $this->pool->fileService->getFileContents($file)
         );
     }
 
     /**
-     * Adds message keys to the key array.
-     *
-     * The same as the addMessage, but we add language keys for a potential
-     * backend integration (includekrexx for example).
+     * The message we want to add. It will be displayed in the output.
      *
      * @param string $key
-     *   The key for the translation function.
-     * @param NULL|array $params
-     *   The parameters for the string replacements inside the translation.
+     *   The message itself.
+     * @param array $args
+     *   The parameters for vsprintf().
      */
-    public function addKey($key, $params = null)
+    public function addMessage($key, array $args = array())
     {
-        $this->keys[$key] = array('key' => $key, 'params' => $params);
+        // Add it to the keys, so the CMS can display it.
+        $this->keys[] = array('key' => $key, 'params' => $args);
+        $this->messages[] = $this->getHelp($key, $args);
     }
 
     /**
@@ -126,16 +138,34 @@ class Messages extends Help
                 $result = "\n\nkreXX messages\n";
                 $result .= "==============\n";
                 foreach ($this->messages as $message) {
-                    $message = $message['message'];
                     $result .= "$message\n";
                 }
                 $result .= "\n\n";
-                return $result;
+                // Output the messages on the shell.
+                echo $result;
             }
-        } else {
-            return $this->pool->render->renderMessages($this->messages);
         }
-        // Still here?
-        return '';
+        // Return the rendered messages.
+        return $this->pool->render->renderMessages($this->messages);
+    }
+
+    /**
+     * Returns the help text when found, otherwise returns an empty string.
+     *
+     * @param string $key
+     *   The help ID from the array above.
+     * @param  array $args
+     *   THe replacement arguments for vsprintf().
+     *
+     * @return string
+     *   The help text.
+     */
+    public function getHelp($key, array $args = array())
+    {
+        if (isset($this->helpArray[$key])) {
+            return vsprintf($this->helpArray[$key], $args);
+        }
+        // Text not found. At least return the key.
+        return vsprintf($key, $args);
     }
 }

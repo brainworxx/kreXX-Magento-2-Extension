@@ -35,7 +35,6 @@
 namespace Brainworxx\Krexx\Analyse\Callback\Analyse;
 
 use Brainworxx\Krexx\Analyse\Callback\AbstractCallback;
-use Brainworxx\Krexx\Analyse\Flection;
 use Brainworxx\Krexx\Analyse\Code\Connectors;
 use Brainworxx\Krexx\Analyse\Model;
 
@@ -68,7 +67,8 @@ class Objects extends AbstractCallback
         $output .= $this->getPublicProperties($ref);
 
         // Dumping getter methods.
-        if ($this->pool->config->getSetting('analyseGetter')) {
+        // We will not dump the getters for internal values, though.
+        if ($this->pool->config->getSetting('analyseGetter') && $ref->isUserDefined()) {
             $output .= $this->getAllGetterData($ref, $data);
         }
 
@@ -204,10 +204,12 @@ class Objects extends AbstractCallback
         foreach ($refProps as $refProp) {
             $publicProps[$refProp->name] = true;
         }
-        // For every not-declared property, we add a 'flection', which is a
-        // mockup of a reflectionProperty.
+        // For every not-declared property, we add a another reflection.
+        // Those are simply added during runtime
         foreach (array_diff_key(get_object_vars($data), $publicProps) as $key => $value) {
-            $refProps[] = new \ReflectionProperty($data, $key);
+            $undeclaredProp = new \ReflectionProperty($data, $key);
+            $undeclaredProp->isUndeclared = true;
+            $refProps[] = $undeclaredProp;
         }
 
         if (empty($refProps)) {
@@ -315,7 +317,6 @@ class Objects extends AbstractCallback
     protected function pollAllConfiguredDebugMethods($data)
     {
         $output = '';
-        $security = $this->pool->config->security;
 
         foreach (explode(',', $this->pool->config->getSetting('debugMethods')) as $funcName) {
             // Check if:
@@ -324,7 +325,7 @@ class Objects extends AbstractCallback
             // 3.) It's not blacklisted.
             if (method_exists($data, $funcName) &&
                 is_callable(array($data, $funcName)) &&
-                $security->isAllowedDebugCall($data, $funcName)
+                $this->pool->config->isAllowedDebugCall($data, $funcName)
             ) {
                 $onlyOptionalParams = true;
                 // We need to check if the callable function requires any parameters.
@@ -432,6 +433,9 @@ class Objects extends AbstractCallback
             // Check nesting level
             $this->pool->emergencyHandler->upOneNestingLevel();
             if ($this->pool->emergencyHandler->checkNesting()) {
+                // We will not be doing this one, but we need to get down with our
+                // nesting level again.
+                $this->pool->emergencyHandler->downOneNestingLevel();
                 return '';
             }
 
@@ -487,6 +491,7 @@ class Objects extends AbstractCallback
             $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
                 ->setName('Constants')
                 ->setType('class internals')
+                ->setIsMetaConstants(true)
                 ->addParameter('data', $refConst)
                 ->addParameter('classname', $classname)
                 ->injectCallback(
@@ -570,6 +575,7 @@ class Objects extends AbstractCallback
         foreach ($methodList as $key => $method) {
             if (strpos($method->getName(), 'get') === 0) {
                 // We only dump those that have no parameters.
+                /** @var \ReflectionMethod $method */
                 $parameters = $method->getParameters();
                 if (!empty($parameters)) {
                     unset($methodList[$key]);
@@ -585,7 +591,7 @@ class Objects extends AbstractCallback
         }
 
         // Got some getters right here.
-        // We need to set al least one connector here to activate
+        // We need to set at least one connector here to activate
         // code generation, even if it is a space.
         return $this->pool->render->renderExpandableChild(
             $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')

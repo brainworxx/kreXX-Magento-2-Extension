@@ -67,7 +67,7 @@ class CallerFinder extends AbstractCaller
         // We will not keep the whole backtrace im memory. We only return what we
         // actually need.
         return array(
-            'file' => htmlspecialchars($this->fileService->filterFilePath($caller['file'])),
+            'file' => htmlspecialchars($this->pool->fileService->filterFilePath($caller['file'])),
             'line' => (int)$caller['line'],
             'varname' => $this->getVarName($caller['file'], $caller['line']),
         );
@@ -127,7 +127,7 @@ class CallerFinder extends AbstractCaller
                 // brackets of the kreXX call.
                 preg_match('/' . $funcname . '\s*\((.*)\)\s*/u', reset($possibleCommands), $name);
                 if (isset($name[1])) {
-                    $varname = $this->pool->encodeString(trim($name[1], " \t\n\r\0\x0B'\""));
+                    $varname = $this->pool->encodingService->encodeString(trim($name[1], " \t\n\r\0\x0B'\""));
                     break;
                 }
             }

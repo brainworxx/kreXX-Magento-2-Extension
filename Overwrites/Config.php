@@ -44,8 +44,6 @@ class Config extends \Brainworxx\Krexx\Service\Config\Config
      *
      * We are using fewer debuMethods for magento, to prevent an
      * overkill-output.
-     * We also set the nesting level to 4, because everything else
-     * is too much.
      *
      * @var array
      */

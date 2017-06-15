@@ -71,7 +71,6 @@ class Krexx
     public static function bootstrapKrexx()
     {
         $krexxDir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        include_once $krexxDir . 'src/view/Help.php';
         include_once $krexxDir . 'src/view/AbstractRender.php';
         include_once $krexxDir . 'src/view/Render.php';
         include_once $krexxDir . 'src/view/Messages.php';
@@ -85,6 +84,7 @@ class Krexx
         include_once $krexxDir . 'src/service/config/Config.php';
         include_once $krexxDir . 'src/service/misc/File.php';
         include_once $krexxDir . 'src/service/misc/Registry.php';
+        include_once $krexxDir . 'src/service/misc/Encoding.php';
         include_once $krexxDir . 'src/service/factory/Factory.php';
         include_once $krexxDir . 'src/service/factory/Pool.php';
         include_once $krexxDir . 'src/service/flow/Recursion.php';
@@ -103,7 +103,7 @@ class Krexx
         include_once $krexxDir . 'src/analyse/routing/process/ProcessResource.php';
         include_once $krexxDir . 'src/analyse/routing/process/ProcessString.php';
         include_once $krexxDir . 'src/analyse/Model.php';
-        include_once $krexxDir . 'src/analyse/Scope.php';
+        include_once $krexxDir . 'src/analyse/code/Scope.php';
         include_once $krexxDir . 'src/analyse/callback/AbstractCallback.php';
         include_once $krexxDir . 'src/analyse/callback/analyse/BacktraceStep.php';
         include_once $krexxDir . 'src/analyse/callback/analyse/ConfigSection.php';
@@ -122,9 +122,9 @@ class Krexx
         include_once $krexxDir . 'src/analyse/comment/AbstractComment.php';
         include_once $krexxDir . 'src/analyse/comment/Methods.php';
         include_once $krexxDir . 'src/analyse/comment/Functions.php';
+        include_once $krexxDir . 'src/analyse/comment/Properties.php';
         include_once $krexxDir . 'src/analyse/code/Codegen.php';
         include_once $krexxDir . 'src/analyse/code/Connectors.php';
-        include_once $krexxDir . 'src/analyse/code/ReflectionParameterWrapper.php';
         include_once $krexxDir . 'src/errorhandler/AbstractError.php';
         include_once $krexxDir . 'src/errorhandler/Fatal.php';
         include_once $krexxDir . 'src/controller/AbstractController.php';

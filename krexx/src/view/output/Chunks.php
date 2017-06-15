@@ -48,7 +48,7 @@ use Brainworxx\Krexx\Service\Factory\Pool;
  * chunks. We also use this class stitch back together this
  * string for output.
  *
- * @see \Brainworxx\Krexx\Service\Factory\Pool->encodeString()
+ * @see \Brainworxx\Krexx\Service\Factory\Pool->encodingService
  *   We use '@@@' to mark a chunk key. This function escapes the @
  *   so we have no collusion with data from strings.
  *
@@ -74,7 +74,7 @@ class Chunks
     protected $metadata = array();
 
     /**
-     * Are we using chunks?
+     * Is the chunks folder write protected?
      *
      * When we do, kreXX will store temporary files in the chunks folder.
      * This saves a lot of memory!
@@ -84,11 +84,11 @@ class Chunks
     protected $useChunks = true;
 
     /**
-     * The file service used to read and write files.
+     * Is the log folder write protected?
      *
-     * @var \Brainworxx\Krexx\Service\Misc\File
+     * @var bool
      */
-    protected $fileService;
+    protected $useLogging = true;
 
     /**
      * The logfolder.
@@ -112,6 +112,20 @@ class Chunks
     protected $fileStamp;
 
     /**
+     * Here we save the encoding we are currently using.
+     *
+     * @var string
+     */
+    protected $officialEncoding = 'utf8';
+
+    /**
+     * List of encodings, where we do not change the $officialEncoding var.
+     *
+     * @var array
+     */
+    protected $doNothingEncodiung = array('ASCII', 'UTF-8', false);
+
+    /**
      * Injects the pool.
      *
      * @param Pool $pool
@@ -122,7 +136,6 @@ class Chunks
         $this->pool = $pool;
         $this->chunkDir = $pool->config->getChunkDir();
         $this->logDir = $pool->config->getLogDir();
-        $this->fileService = $pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
         $this->fileStamp = explode(' ', microtime());
         $this->fileStamp = $this->fileStamp[1] . str_replace('0.', '', $this->fileStamp[0]);
     }
@@ -143,8 +156,10 @@ class Chunks
         if ($this->useChunks && strlen($string) > 10000) {
             // Get the key.
             $key = $this->genKey();
+            // Detect the encoding in the chunk.
+            $this->detectEncoding($string);
             // Write the key to the chunks folder.
-            $this->fileService->putFileContents($this->chunkDir . $key . '.Krexx.tmp', $string);
+            $this->pool->fileService->putFileContents($this->chunkDir . $key . '.Krexx.tmp', $string);
             // Return the first part plus the key.
             return '@@@' . $key . '@@@';
         }
@@ -184,20 +199,11 @@ class Chunks
     protected function dechunkMe($key)
     {
         $filename = $this->chunkDir . $key . '.Krexx.tmp';
-        if (is_readable($filename)) {
-            // Read the file.
-            $string = $this->fileService->getFileContents($filename);
-            // Delete it, we don't need it anymore.
-            $this->fileService->deleteFile($filename);
-
-            return $string;
-        }
-        // Huh, we can not fully access this one.
-        $this->pool->messages->addMessage(
-            $this->pool->messages->getHelp('chunkserviceAccess') . $filename
-        );
-        return 'Could not access chunk file ' . $filename;
-
+        // Read the file.
+        $string = $this->pool->fileService->getFileContents($filename);
+        // Delete it, we don't need it anymore.
+        $this->pool->fileService->deleteFile($filename);
+        return $string;
     }
 
     /**
@@ -247,6 +253,11 @@ class Chunks
     {
         $this->cleanupOldChunks();
 
+        if (!$this->useLogging) {
+            // We have no write access. Do nothing.
+            return;
+        }
+
         // Cleanup old logfiles to prevent a overflow.
         $this->cleanupOldLogs($this->logDir);
 
@@ -256,7 +267,7 @@ class Chunks
 
         while ($chunkPos !== false) {
             // We have a chunk, we save the html part.
-            $this->fileService->putFileContents($filename, substr($string, 0, $chunkPos));
+            $this->pool->fileService->putFileContents($filename, substr($string, 0, $chunkPos));
 
             $chunkPart = substr($string, $chunkPos);
 
@@ -269,15 +280,15 @@ class Chunks
         }
 
         // No more chunks, we save what is left.
-        $this->fileService->putFileContents($filename, $string);
+        $this->pool->fileService->putFileContents($filename, $string);
         // Save our metadata, so a potential backend module can display it.
         // We may or may not have already some output for this file.
         if (!empty($this->metadata)) {
             // Remove the old metadata file. We still have all it's content
             // available in $this->metadata.
-            $this->fileService->deleteFile($filename . '.json');
+            $this->pool->fileService->deleteFile($filename . '.json');
             // Create a new metadata file with new info.
-            $this->fileService->putFileContents($filename . '.json', json_encode($this->metadata));
+            $this->pool->fileService->putFileContents($filename . '.json', json_encode($this->metadata));
         }
     }
 
@@ -286,6 +297,11 @@ class Chunks
      */
     protected function cleanupOldChunks()
     {
+        if (!$this->useChunks) {
+            // We have no write access. Do nothing.
+            return;
+        }
+
         static $beenHere = false;
 
         // We only do this once.
@@ -301,7 +317,7 @@ class Chunks
             foreach ($chunkList as $file) {
                 // We delete everything that is older than 15 minutes.
                 if ((filemtime($file) + 900) < $now) {
-                    $this->fileService->deleteFile($file);
+                    $this->pool->fileService->deleteFile($file);
                 }
             }
         }
@@ -315,6 +331,11 @@ class Chunks
      */
     protected function cleanupOldLogs($logDir)
     {
+        if (!$this->useLogging) {
+            // We have no write access. Do nothing.
+            return;
+        }
+
         // Cleanup old logfiles to prevent a overflow.
         $logList = glob($logDir . '*.Krexx.html');
         if (empty($logList)) {
@@ -327,8 +348,8 @@ class Chunks
         // Cleanup logfiles.
         foreach ($logList as $file) {
             if ($count > $maxFileCount) {
-                $this->fileService->deleteFile($file);
-                $this->fileService->deleteFile($file . '.json');
+                $this->pool->fileService->deleteFile($file);
+                $this->pool->fileService->deleteFile($file . '.json');
             }
             ++$count;
         }
@@ -346,6 +367,11 @@ class Chunks
     public function setUseChunks($bool)
     {
         $this->useChunks = $bool;
+    }
+
+    public function setUseLogging($bool)
+    {
+        $this->useLogging = $bool;
     }
 
     /**
@@ -372,7 +398,42 @@ class Chunks
 
         // Delete them all!
         foreach ($chunkList as $file) {
-            $this->fileService->deleteFile($file);
+            $this->pool->fileService->deleteFile($file);
         }
+    }
+
+    /**
+     * Simple wrapper around mb_detect_encoding.
+     *
+     * We also try to track the encoding we need to add to the output, so
+     * people can use unicode function names.
+     * We are not using it above, because there we are only handling broken
+     * string encoding by completely encoding it, every char in there.
+     *
+     * @see \Brainworxx\Krexx\Analyse\Routing\Process\ProcessString
+     *
+     * @param string $string
+     *   The string we are processing.
+     */
+    public function detectEncoding($string)
+    {
+        $encoding = mb_detect_encoding($string);
+
+        // We need to decide, if we need to change the official encoding of
+        // the HTML output with a meta tag. we ignore everything in the
+        // $this->doNothingEncoding array.
+        if (in_array($encoding, $this->doNothingEncodiung, true) === false) {
+            $this->officialEncoding = $encoding;
+        }
+    }
+
+    /**
+     * Getter for the official encoding.
+     *
+     * @return string
+     */
+    public function getOfficialEncoding()
+    {
+        return $this->officialEncoding;
     }
 }

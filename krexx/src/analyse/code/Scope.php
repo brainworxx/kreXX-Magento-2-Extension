@@ -32,15 +32,16 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\Krexx\Analyse;
+namespace Brainworxx\Krexx\Analyse\Code;
 
 use Brainworxx\Krexx\Service\Factory\Pool;
+use Brainworxx\Krexx\Analyse\Model;
 
 /**
  * Scope analysis decides if a property of method is accessible in the current
  * analysis scope.
  *
- * @package Brainworxx\Krexx\Analyse
+ * @package Brainworxx\Krexx\Analyse\Code
  */
 class Scope
 {

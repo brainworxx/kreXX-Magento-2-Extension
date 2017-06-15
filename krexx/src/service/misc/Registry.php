@@ -83,7 +83,7 @@ class Registry
         if (empty($this->data[$key])) {
             return null;
         }
-        
+
         return $this->data[$key];
     }
 
@@ -91,10 +91,13 @@ class Registry
      * Check if we actually have a value to this key.
      *
      * @param $key
+     *   The key we want to check.
+     *
      * @return bool
+     *   If we have a value, or not.
      */
     public function has($key)
     {
-        return empty($data[$key]);
+        return isset($this->data[$key]);
     }
 }

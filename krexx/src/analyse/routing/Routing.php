@@ -35,16 +35,14 @@
 namespace Brainworxx\Krexx\Analyse\Routing;
 
 use Brainworxx\Krexx\Analyse\Model;
-use Brainworxx\Krexx\Controller\AbstractController;
 use Brainworxx\Krexx\Service\Factory\Pool;
-use Magento\Framework\Indexer\AbstractProcessor;
 
 /**
  * "Routing" for kreXX
  *
  * The analysisHub decides what to do next with the model.
  *
- * @package Brainworxx\Krexx\Analysis
+ * @package Brainworxx\Krexx\Analyse\Routing
  */
 class Routing extends AbstractRouting
 {
@@ -53,7 +51,6 @@ class Routing extends AbstractRouting
     {
         parent::__construct($pool);
         $this->processArray = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Process\\ProcessArray');
-        $this->processBacktrace = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Process\\ProcessBacktrace');
         $this->processBoolean = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Process\\ProcessBoolean');
         $this->processClosure = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Process\\ProcessClosure');
         $this->processFloat = $pool->createClass('Brainworxx\\Krexx\\Analyse\\Routing\\Process\\ProcessFloat');

@@ -32,14 +32,14 @@
  *   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-namespace Brainworxx\Krexx\Analyse\comment;
+namespace Brainworxx\Krexx\Analyse\Comment;
 
 use Brainworxx\Krexx\Service\Factory\Pool;
 
 /**
  * Abstract class for the comment analysis.
  *
- * @package Brainworxx\Krexx\Analyse
+ * @package Brainworxx\Krexx\Analyse\Comment
  */
 abstract class AbstractComment
 {
@@ -74,7 +74,7 @@ abstract class AbstractComment
     /**
      * We get the comment.
      *
-     * @param $reflection
+     * @param \Reflector $reflection
      *   A already existing reflection of the method or function.
      * @param \ReflectionClass $reflectionClass
      *   An already existing reflection of the original class.
@@ -83,7 +83,7 @@ abstract class AbstractComment
      *   The prettified comment.
      */
     abstract public function getComment(
-        \ReflectionFunctionAbstract $reflection,
+        \Reflector $reflection,
         \ReflectionClass $reflectionClass = null
     );
 

@@ -79,6 +79,7 @@ class Dynamicgetter extends ThroughGetter
             // Check if there is a getter method in there. We should add the
             // comment to the model.
             foreach ($this->parameters['methodList'] as $id => $reflectionMethod) {
+                /** @var \ReflectionMethod $reflectionMethod */
                 $name = $reflectionMethod->getName();
                 if ($name === $key) {
                     $model->addToJson('method comment', nl2br($this->pool

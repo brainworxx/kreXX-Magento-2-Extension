@@ -96,7 +96,6 @@ class ThroughProperties extends AbstractCallback
             // Stitch together our additional info about the data:
             // public, protected, private, static.
             $additional = '';
-            $connectorType = Connectors::NORMAL_PROPERTY;
             if ($refProperty->isProtected()) {
                 $additional .= 'protected ';
             } elseif ($refProperty->isPublic()) {
@@ -112,22 +111,47 @@ class ThroughProperties extends AbstractCallback
                 $additional .= 'inherited ';
             }
 
-            if (is_a($refProperty, '\\Brainworxx\\Krexx\\Analysis\\Flection')) {
-                /* @var \Brainworxx\Krexx\Analyse\Flection $refProperty */
-                $additional .= $refProperty->getWhatAmI() . ' ';
-            }
+            $comment = '';
+            $declarationPlace = '';
+
+            $connectorType = Connectors::NORMAL_PROPERTY;
             if ($refProperty->isStatic()) {
                 $additional .= 'static ';
                 $connectorType = Connectors::STATIC_PROPERTY;
                 // There is always a $ in front of a static property.
                 $propName = '$' . $propName;
+            } elseif (isset($refProperty->isUndeclared)) {
+                // The property 'isUndeclared' is not a part of the reflectionProperty.
+                // @see \Brainworxx\Krexx\Analyse\Callback\Analyse\Objects
+                $additional .= 'dynamic property ';
+
+                // Check for very special chars in there.
+                // FAIK this is only possible for dynamically declared properties
+                // which can never be static.
+                if (!preg_match("/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/", $propName)) {
+                    // @see https://stackoverflow.com/questions/29019484/validate-a-php-variable
+                    // @author AbraCadaver
+                    $connectorType = Connectors::SPECIAL_CHARS_PROP;
+                }
+            } else {
+                // Since we are dealing with a declared Property here, we can
+                // get the comment and the declaration place.
+                $comment = $this->pool
+                    ->createClass('Brainworxx\\Krexx\\Analyse\\Comment\\Properties')
+                    ->getComment($refProperty);
+
+                $declarationPlace = $this->pool->fileService->filterFilePath(
+                    $refProperty->getDeclaringClass()->getFileName()
+                );
             }
 
             // Stitch together our model
             $output .= $this->pool->routing->analysisHub(
                 $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
                     ->setData($value)
-                    ->setName($propName)
+                    ->setName($this->pool->encodingService->encodeString($propName))
+                    ->addToJson('Comment', $comment)
+                    ->addToJson('Declared in', $declarationPlace)
                     ->setAdditional($additional)
                     ->setConnectorType($connectorType)
             );

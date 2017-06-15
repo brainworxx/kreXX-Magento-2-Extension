@@ -56,11 +56,6 @@ abstract class AbstractRouting
     protected $processArray;
 
     /**
-     * @var \Brainworxx\Krexx\Analyse\Routing\Process\ProcessBacktrace
-     */
-    protected $processBacktrace;
-
-    /**
      * @var \Brainworxx\Krexx\Analyse\Routing\Process\ProcessBoolean
      */
     protected $processBoolean;
@@ -126,11 +121,6 @@ abstract class AbstractRouting
      */
     protected function generateDomIdFromObject($data)
     {
-        if (is_object($data)) {
-            return 'k' . $this->pool->emergencyHandler->getKrexxCount() . '_' . spl_object_hash($data);
-        }
-
-        // Do nothing.
-        return '';
+        return 'k' . $this->pool->emergencyHandler->getKrexxCount() . '_' . spl_object_hash($data);
     }
 }

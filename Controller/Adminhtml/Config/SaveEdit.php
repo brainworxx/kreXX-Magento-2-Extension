@@ -159,7 +159,7 @@ class SaveEdit extends Action
                         // We escape the value, just in case, since we can not whitelist it.
                         $value = htmlspecialchars(preg_replace('/\s+/', '', $value));
                         // Evaluate the setting!
-                        if ($pool->config->security->evaluateSetting($section, $setting_name, $value)) {
+                        if ($pool->config->evaluateSetting($section, $setting_name, $value)) {
                             $old_values[$section][$setting_name] = $value;
                         } else {
                             // Validation failed! kreXX will generate a message, which we will
@@ -185,9 +185,10 @@ class SaveEdit extends Action
         if ($all_ok) {
             if ($this->ioFile->write($filepath, $ini) === false) {
                 $all_ok = false;
-                $pool->messages->addMessage('Configuration file ' .
-                    $fileService->filterFilePath($filepath) .
-                    ' is not writeable!');
+                $pool->messages->addMessage(
+                    'Configuration file %s is not writable!',
+                    array($fileService->filterFilePath($filepath))
+                );
             }
         }
 

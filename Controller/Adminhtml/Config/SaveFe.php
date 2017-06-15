@@ -50,22 +50,18 @@ class SaveFe extends Action
      */
     protected $allowedSettingsNames = array(
         'skin',
-//        'maxfiles',
-//        'destination',
         'maxCall',
         'disabled',
         'detectAjax',
         'analyseProtected',
         'analysePrivate',
         'analyseTraversable',
-//        'debugMethods',
         'level',
         'analyseProtectedMethods',
         'analysePrivateMethods',
         'registerAutomatically',
         'backtraceAnalysis',
         'analyseConstants',
-//        'iprange',
         'memoryLeft',
         'maxRuntime',
         'useScopeAnalysis',
@@ -175,25 +171,25 @@ class SaveFe extends Action
         }
 
         // Now we should write the file!
-        $fileService = $pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
         if ($all_ok) {
             if ($this->ioFile->write($filepath, $ini) === false) {
                 $all_ok = false;
-                $pool->messages->addMessage('Configuration file ' .
-                    $fileService->filterFilePath($filepath) .
-                    ' is not writeable!');
+                $pool->messages->addMessage(
+                    'Configuration file %s is not writable!',
+                    array($pool->fileService->filterFilePath($filepath))
+                );
             }
         }
 
         // Something went wrong, we need to tell the user.
-        if (!$all_ok) {
-            $this->messageManager->addError(
-                strip_tags(__($pool->messages->outputMessages())) . '<br />' . __('The data was NOT saved.')
-            );
-        } else {
+        if ($all_ok) {
             $this->messageManager->addSuccess(
                 __('The settings were saved to:') . '<br />' .
-                $fileService->filterFilePath($filepath)
+                $pool->fileService->filterFilePath($filepath)
+            );
+        } else {
+            $this->messageManager->addError(
+                strip_tags(__($pool->messages->outputMessages())) . '<br />' . __('The data was NOT saved.')
             );
         }
 

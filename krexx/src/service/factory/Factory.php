@@ -34,12 +34,10 @@
 
 namespace Brainworxx\Krexx\Service\Factory;
 
-use Brainworxx\Krexx\Controller\AbstractController;
-
 /**
  * Simple factory, nothing special. Offers a overwrite method.
  *
- * @package Brainworxx\Krexx\Service
+ * @package Brainworxx\Krexx\Service\Factory
  */
 class Factory
 {

@@ -35,8 +35,12 @@
 namespace Brainworxx\Krexx\Analyse\Caller;
 
 use Brainworxx\Krexx\Service\Factory\Pool;
-use Brainworxx\Krexx\Service\Misc\File;
 
+/**
+ * Abstract defining what a CallerFinder clkass must implement.
+ *
+ * @package Brainworxx\Krexx\Analyse\Caller
+ */
 abstract class AbstractCaller
 {
     /**
@@ -45,11 +49,6 @@ abstract class AbstractCaller
      * @var Pool
      */
     protected $pool;
-
-    /**
-     * @var File
-     */
-    protected $fileService;
 
     /**
      * Pattern that we use to identify the caller.
@@ -71,7 +70,6 @@ abstract class AbstractCaller
     public function __construct(Pool $pool)
     {
         $this->pool = $pool;
-        $this->fileService = $pool->createClass('Brainworxx\\Krexx\\Service\\Misc\\File');
     }
 
     /**
