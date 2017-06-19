@@ -99,87 +99,87 @@ class Edit extends Template
         }
 
         // Get all values from the configuration file.
-        $settings['output']['skin'] = $pool->config->getConfigFromFile(
+        $settings['output']['skin'] = $pool->config->iniConfig->getConfigFromFile(
             'output',
             'skin'
         );
-        $settings['output']['maxfiles'] = $pool->config->getConfigFromFile(
+        $settings['output']['maxfiles'] = $pool->config->iniConfig->getConfigFromFile(
             'output',
             'maxfiles'
         );
-        $settings['output']['destination'] = $pool->config->getConfigFromFile(
+        $settings['output']['destination'] = $pool->config->iniConfig->getConfigFromFile(
             'output',
             'destination'
         );
-        $settings['runtime']['maxCall'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['maxCall'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'maxCall'
         );
-        $settings['output']['disabled'] = $pool->config->getConfigFromFile(
+        $settings['output']['disabled'] = $pool->config->iniConfig->getConfigFromFile(
             'output',
             'disabled'
         );
-        $settings['output']['iprange'] = $pool->config->getConfigFromFile(
+        $settings['output']['iprange'] = $pool->config->iniConfig->getConfigFromFile(
             'output',
             'iprange'
         );
-        $settings['runtime']['detectAjax'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['detectAjax'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'detectAjax'
         );
-        $settings['properties']['analyseProtected'] = $pool->config->getConfigFromFile(
+        $settings['properties']['analyseProtected'] = $pool->config->iniConfig->getConfigFromFile(
             'properties',
             'analyseProtected'
         );
-        $settings['properties']['analysePrivate'] = $pool->config->getConfigFromFile(
+        $settings['properties']['analysePrivate'] = $pool->config->iniConfig->getConfigFromFile(
             'properties',
             'analysePrivate'
         );
-        $settings['properties']['analyseConstants'] = $pool->config->getConfigFromFile(
+        $settings['properties']['analyseConstants'] = $pool->config->iniConfig->getConfigFromFile(
             'properties',
             'analyseConstants'
         );
-        $settings['properties']['analyseTraversable'] = $pool->config->getConfigFromFile(
+        $settings['properties']['analyseTraversable'] = $pool->config->iniConfig->getConfigFromFile(
             'properties',
             'analyseTraversable'
         );
-        $settings['methods']['debugMethods'] = $pool->config->getConfigFromFile(
+        $settings['methods']['debugMethods'] = $pool->config->iniConfig->getConfigFromFile(
             'methods',
             'debugMethods'
         );
-        $settings['runtime']['level'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['level'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'level'
         );
-        $settings['methods']['analyseProtectedMethods'] = $pool->config->getConfigFromFile(
+        $settings['methods']['analyseProtectedMethods'] = $pool->config->iniConfig->getConfigFromFile(
             'methods',
             'analyseProtectedMethods'
         );
-        $settings['methods']['analysePrivateMethods'] = $pool->config->getConfigFromFile(
+        $settings['methods']['analysePrivateMethods'] = $pool->config->iniConfig->getConfigFromFile(
             'methods',
             'analysePrivateMethods'
         );
-        $settings['backtraceAndError']['registerAutomatically'] = $pool->config->getConfigFromFile(
+        $settings['backtraceAndError']['registerAutomatically'] = $pool->config->iniConfig->getConfigFromFile(
             'backtraceAndError',
             'registerAutomatically'
         );
-        $settings['methods']['analyseGetter'] = $pool->config->getConfigFromFile(
+        $settings['methods']['analyseGetter'] = $pool->config->iniConfig->getConfigFromFile(
             'methods',
             'analyseGetter'
         );
-        $settings['runtime']['useScopeAnalysis'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['useScopeAnalysis'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'useScopeAnalysis'
         );
-        $settings['runtime']['memoryLeft'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['memoryLeft'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'memoryLeft'
         );
-        $settings['runtime']['maxRuntime'] = $pool->config->getConfigFromFile(
+        $settings['runtime']['maxRuntime'] = $pool->config->iniConfig->getConfigFromFile(
             'runtime',
             'maxRuntime'
         );
-        $settings['backtraceAndError']['maxStepNumber'] = $pool->config->getConfigFromFile(
+        $settings['backtraceAndError']['maxStepNumber'] = $pool->config->iniConfig->getConfigFromFile(
             'backtraceAndError',
             'maxStepNumber'
         );

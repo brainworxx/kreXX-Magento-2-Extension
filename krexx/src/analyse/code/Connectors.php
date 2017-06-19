@@ -34,8 +34,6 @@
 
 namespace Brainworxx\Krexx\Analyse\Code;
 
-use Brainworxx\Krexx\Controller\AbstractController;
-
 /**
  * Generating the connectors for code generation.
  *
@@ -103,7 +101,7 @@ class Connectors
      *
      * @var array
      */
-    protected $connctorArray = array(
+    protected $connectorArray = array(
         self::NOTHING => array('', ''),
         self::METHOD => array('->', '(@param@)'),
         self::STATIC_METHOD => array('::', '(@param@)'),
@@ -172,7 +170,7 @@ class Connectors
     /**
      * Setter for the type we are rendering, using the class constants.
      *
-     * @param integer $type
+     * @param string $type
      *   The type, @see constants above
      */
     public function setType($type)
@@ -189,7 +187,7 @@ class Connectors
     public function getConnector1()
     {
         if (empty($this->customConnector1)) {
-            return $this->connctorArray[$this->type][0];
+            return $this->connectorArray[$this->type][0];
         }
 
         return $this->customConnector1;
@@ -213,7 +211,7 @@ class Connectors
                 // Copy the parameters, we will need the original ones later.
                 // This one is only for the quick preview.
                 $params = $this->params;
-                // Capping the parameters for abetter readability.
+                // Capping the parameters for a better readability.
                 if ($cap > 0 && strlen($params) > $cap) {
                     $params = substr($params, 0, $cap) . ' . . . ';
                 }
@@ -222,10 +220,10 @@ class Connectors
             } else {
                 $params = '';
             }
-            return  str_replace('@param@', $params, $this->connctorArray[$this->type][1]);
+            return  str_replace('@param@', $params, $this->connectorArray[$this->type][1]);
         }
 
-        return $this->connctorArray[$this->type][1];
+        return $this->connectorArray[$this->type][1];
     }
 
     /**

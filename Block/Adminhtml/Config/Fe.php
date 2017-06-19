@@ -67,55 +67,55 @@ class Fe extends Template
         // See, if we have any values in the configuration file.
         // See, if we have any values in the configuration file.
         $settings['output']['skin'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('skin')
+            $pool->config->iniConfig->getFeConfigFromFile('skin')
         );
         $settings['runtime']['maxCall'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('maxCall')
+            $pool->config->iniConfig->getFeConfigFromFile('maxCall')
         );
         $settings['output']['disabled'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('disabled')
+            $pool->config->iniConfig->getFeConfigFromFile('disabled')
         );
         $settings['runtime']['detectAjax'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('detectAjax')
+            $pool->config->iniConfig->getFeConfigFromFile('detectAjax')
         );
         $settings['properties']['analyseProtected'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analyseProtected')
+            $pool->config->iniConfig->getFeConfigFromFile('analyseProtected')
         );
         $settings['properties']['analysePrivate'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analysePrivate')
+            $pool->config->iniConfig->getFeConfigFromFile('analysePrivate')
         );
         $settings['properties']['analyseTraversable'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analyseTraversable')
+            $pool->config->iniConfig->getFeConfigFromFile('analyseTraversable')
         );
         $settings['properties']['analyseConstants'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analyseConstants')
+            $pool->config->iniConfig->getFeConfigFromFile('analyseConstants')
         );
         $settings['runtime']['level'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('level')
+            $pool->config->iniConfig->getFeConfigFromFile('level')
         );
         $settings['methods']['analyseProtectedMethods'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analyseProtectedMethods')
+            $pool->config->iniConfig->getFeConfigFromFile('analyseProtectedMethods')
         );
         $settings['methods']['analysePrivateMethods'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analysePrivateMethods')
+            $pool->config->iniConfig->getFeConfigFromFile('analysePrivateMethods')
         );
         $settings['backtraceAndError']['registerAutomatically'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('registerAutomatically')
+            $pool->config->iniConfig->getFeConfigFromFile('registerAutomatically')
         );
         $settings['backtraceAndError']['maxStepNumber'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('maxStepNumber')
+            $pool->config->iniConfig->getFeConfigFromFile('maxStepNumber')
         );
         $settings['runtime']['memoryLeft'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('memoryLeft')
+            $pool->config->iniConfig->getFeConfigFromFile('memoryLeft')
         );
         $settings['runtime']['maxRuntime'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('maxRuntime')
+            $pool->config->iniConfig->getFeConfigFromFile('maxRuntime')
         );
         $settings['methods']['analyseGetter'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('analyseGetter')
+            $pool->config->iniConfig->getFeConfigFromFile('analyseGetter')
         );
         $settings['runtime']['useScopeAnalysis'] = $this->convertKrexxFeSetting(
-            $pool->config->getFeConfigFromFile('useScopeAnalysis')
+            $pool->config->iniConfig->getFeConfigFromFile('useScopeAnalysis')
         );
 
         // Are these actually set?

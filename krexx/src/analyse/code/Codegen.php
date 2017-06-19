@@ -45,13 +45,9 @@ use Brainworxx\Krexx\Service\Factory\Pool;
 class Codegen
 {
     /**
-     * Some constants for internal use.
+     * Constant identifier for the array multiline code generation.
      */
-    const ITERATOR_TO_ARRAY = 'iterator_to_array';
-    const STOP = 'stop';
-    const PROPERTY = 'property';
-    const METHOD = 'method';
-    const CONCATENATION = 'concatenation';
+    const ITERATOR_TO_ARRAY = 1;
 
 
     /**
@@ -249,7 +245,7 @@ class Codegen
     }
 
     /**
-     * Convert the default value into a human readabla form.
+     * Convert the default value into a human readable form.
      *
      * @param mixed $default
      * The default value we need to bring into a human readable form.

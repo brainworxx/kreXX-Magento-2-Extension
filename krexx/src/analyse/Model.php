@@ -132,9 +132,9 @@ class Model
     /**
      * Are we dealing with multiline code generation?
      *
-     * @var string
+     * @var integer
      */
-    protected $multiLineCodeGen = '';
+    protected $multiLineCodeGen = 0;
 
     /**
      * Defines if the content of the variable qualifies as a callback.
@@ -384,7 +384,7 @@ class Model
     /**
      * We simply add more info to our info json.
      * Leftover linebreaks will be removed.
-     * If the value is emptyx, we will remove a possible previous entry to this key.
+     * If the value is empty, we will remove a possible previous entry to this key.
      *
      * @param string $key
      *   The array key.
