@@ -235,6 +235,28 @@
                     <label for="factory.maxRuntime"></label>
                 </td>
             </tr>
+            <tr>
+                <td><span><?php echo __('Use scope analysis:'); ?></span></td>
+                <td>
+                    <select name="runtime[useScopeAnalysis]" id="useScopeAnalysis" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['runtime']['useScopeAnalysis']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            }
+                            ?>
+                            <option
+                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="useScopeAnalysis"></label>
+                </td>
+                <td>
+                    <input id="factory.useScopeAnalysis" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['useScopeAnalysis']; ?>/>
+                    <label for="factory.useScopeAnalysis"></label>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
