@@ -36,6 +36,7 @@ namespace Brainworxx\M2krexx\Overwrites;
 
 use Brainworxx\Krexx\Analyse\Code\Codegen;
 use Brainworxx\Krexx\Analyse\Callback\Iterate\ThroughGetter;
+use Brainworxx\Krexx\Analyse\Code\Connectors;
 
 /**
  * Analyses all the dynamic getter methods of a varien object.
@@ -72,7 +73,7 @@ class Dynamicgetter extends ThroughGetter
             /** @var \Brainworxx\Krexx\Analyse\Model $model */
             $model = $this->pool->createClass('Brainworxx\\Krexx\\Analyse\\Model')
                 ->setName($key)
-                ->setConnectorType(Codegen::METHOD)
+                ->setConnectorType(Connectors::METHOD)
                 ->setData($value)
                 ->addToJson('hint', 'Magento\Framework\DataObject magic getter method.');
 

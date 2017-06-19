@@ -34,6 +34,8 @@
 
 namespace Brainworxx\Krexx\Analyse\Code;
 
+use Brainworxx\Krexx\Controller\AbstractController;
+
 /**
  * Generating the connectors for code generation.
  *
@@ -41,6 +43,9 @@ namespace Brainworxx\Krexx\Analyse\Code;
  */
 class Connectors
 {
+
+    const NOTHING = 0;
+
     /**
      * connector1 = '->'
      * connector2 = '()'
@@ -65,7 +70,7 @@ class Connectors
 
     /**
      * connector1 = '[\''
-     * connector2 = ''\']'
+     * connector2 = '\']'
      */
     const ASSOCIATIVE_ARRAY = 4;
 
@@ -92,6 +97,23 @@ class Connectors
      * connector2 = '\'}'
      */
     const SPECIAL_CHARS_PROP = 8;
+
+    /**
+     * List of the combinations of connectors.
+     *
+     * @var array
+     */
+    protected $connctorArray = array(
+        self::NOTHING => array('', ''),
+        self::METHOD => array('->', '(@param@)'),
+        self::STATIC_METHOD => array('::', '(@param@)'),
+        self::NORMAL_ARRAY => array('[', ']'),
+        self::ASSOCIATIVE_ARRAY => array('[\'', '\']'),
+        self::CONSTANT => array('::', ''),
+        self::NORMAL_PROPERTY => array('->', ''),
+        self::STATIC_PROPERTY => array('::', ''),
+        self::SPECIAL_CHARS_PROP => array('->{\'', '\'}'),
+    );
 
     /**
      * The name of the language here. Will be used as the source generation
@@ -150,7 +172,7 @@ class Connectors
     /**
      * Setter for the type we are rendering, using the class constants.
      *
-     * @param string $type
+     * @param integer $type
      *   The type, @see constants above
      */
     public function setType($type)
@@ -167,48 +189,7 @@ class Connectors
     public function getConnector1()
     {
         if (empty($this->customConnector1)) {
-            switch ($this->type) {
-                case 0:
-                    return '';
-                    break;
-
-                case $this::NORMAL_ARRAY:
-                    return '[';
-                    break;
-
-                case $this::ASSOCIATIVE_ARRAY:
-                    return '[\'';
-                    break;
-
-                case $this::NORMAL_PROPERTY:
-                    return '->';
-                    break;
-
-                case $this::METHOD:
-                    return '->';
-                    break;
-
-                case $this::STATIC_METHOD:
-                    return '::';
-                    break;
-
-                case $this::STATIC_PROPERTY:
-                    return '::';
-                    break;
-
-                case $this::CONSTANT:
-                    return '::';
-                    break;
-
-                case $this::SPECIAL_CHARS_PROP:
-                    return '->{\'';
-                    break;
-
-                default:
-                    // Unknown type, return empty string.
-                    return '';
-                    break;
-            }
+            return $this->connctorArray[$this->type][0];
         }
 
         return $this->customConnector1;
@@ -226,48 +207,25 @@ class Connectors
      */
     public function getConnector2($cap)
     {
-        if ($cap > 0 && strlen($this->params) > $cap) {
-            $params = substr($this->params, 0, $cap) . ' . . . ';
-        } else {
-            $params = $this->params;
+        // Methods always have their parameters.
+        if ($this->type === self::METHOD || $this->type === self::STATIC_METHOD) {
+            if (!empty($this->params)) {
+                // Copy the parameters, we will need the original ones later.
+                // This one is only for the quick preview.
+                $params = $this->params;
+                // Capping the parameters for abetter readability.
+                if ($cap > 0 && strlen($params) > $cap) {
+                    $params = substr($params, 0, $cap) . ' . . . ';
+                }
+                // We wrap them in a <small>, but only if we have any.
+                $params = '<small>' . $params . '</small>';
+            } else {
+                $params = '';
+            }
+            return  str_replace('@param@', $params, $this->connctorArray[$this->type][1]);
         }
 
-        switch ($this->type) {
-            case '':
-                return '';
-                break;
-
-            case $this::NORMAL_ARRAY:
-                return ']';
-                break;
-
-            case $this::ASSOCIATIVE_ARRAY:
-                return '\']';
-                break;
-
-            case $this::METHOD:
-                if (empty($params)) {
-                    return '()';
-                }
-                return '(<small>' . $params . '</small>)';
-                break;
-
-            case $this::STATIC_METHOD:
-                if (empty($params)) {
-                    return '()';
-                }
-                return '(<small>' . $params . '</small>)';
-                break;
-
-            case $this::SPECIAL_CHARS_PROP:
-                return '\'}';
-                break;
-
-            default:
-                // Unknown type, return empty string.
-                return '';
-                break;
-        }
+        return $this->connctorArray[$this->type][1];
     }
 
     /**
