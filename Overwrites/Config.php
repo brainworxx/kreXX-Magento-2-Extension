@@ -42,7 +42,7 @@ class Config extends \Brainworxx\Krexx\Service\Config\Config
     /**
      * {@inheritdoc}
      *
-     * We are using fewer debuMethods for magento, to prevent an
+     * We are using fewer debug methods for magento, to prevent an
      * overkill-output.
      *
      * @var array

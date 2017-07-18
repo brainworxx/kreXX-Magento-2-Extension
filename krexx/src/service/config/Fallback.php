@@ -303,7 +303,7 @@ class Fallback
     public $version = '2.2.1 dev';
 
     /**
-     * Limit for the couint in an array. If an array is larger that this,
+     * Limit for the count in an array. If an array is larger that this,
      * we will use the ThroughLargeArray callback
      *
      * @see \Brainworxx\Krexx\Analyse\Routing\Process\ProcessArray
