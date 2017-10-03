@@ -132,18 +132,19 @@ class Messages
      */
     public function outputMessages()
     {
+
         // Simple Wrapper for OutputActions::$render->renderMessages
-        if (php_sapi_name() === 'cli') {
-            if (!empty($this->messages)) {
-                $result = "\n\nkreXX messages\n";
-                $result .= "==============\n";
-                foreach ($this->messages as $message) {
-                    $result .= "$message\n";
-                }
-                $result .= "\n\n";
-                // Output the messages on the shell.
-                echo $result;
+        if (php_sapi_name() === 'cli' &&
+            !empty($this->messages)
+        ) {
+            // Output the messages on the shell.
+            $result = "\n\nkreXX messages\n";
+            $result .= "==============\n";
+            foreach ($this->messages as $message) {
+                $result .= "$message\n";
             }
+
+            echo $result . "\n\n";
         }
         // Return the rendered messages.
         return $this->pool->render->renderMessages($this->messages);
@@ -162,14 +163,12 @@ class Messages
      */
     public function getHelp($key, array $args = array())
     {
-        if (empty($key)) {
+        // Check is wecan get avalue, at all.
+        if (empty($this->helpArray[$key])) {
             return '';
         }
 
-        if (isset($this->helpArray[$key])) {
-            return vsprintf($this->helpArray[$key], $args);
-        }
-        // Text not found. At least return the key.
-        return vsprintf($key, $args);
+        // Return the value
+        return vsprintf($this->helpArray[$key], $args);
     }
 }

@@ -34,16 +34,12 @@
 
 namespace Brainworxx\Krexx\Analyse;
 
-use Brainworxx\Krexx\Analyse\Callback\AbstractCallback;
-use Brainworxx\Krexx\Service\Factory\Pool;
-use Brainworxx\Krexx\Analyse\Code\Connectors;
-
 /**
  * Model for the view rendering
  *
  * @package Brainworxx\Krexx\Analyse
  */
-class Model
+class Model extends AbstractModel
 {
     /**
      * The object/string/array/whatever we are analysing right now
@@ -82,43 +78,11 @@ class Model
     protected $type = '';
 
     /**
-     * The ID of the help text.
-     *
-     * @var string
-     */
-    protected $helpid = '';
-
-    /**
-     * Additional data, we are sending to the FE vas a json, hence the name.
-     *
-     * Right now, only the smokygrey skin makes use of this.
-     *
-     * @var array
-     */
-    protected $json = array();
-
-    /**
      * A unique ID for the dom. We use this one for recursion resolving via JS.
      *
      * @var string
      */
     protected $domid = '';
-
-    /**
-     * Parameters for the renderMe method.
-     *
-     * Should be used in the extending classes.
-     *
-     * @var array
-     */
-    protected $parameters = array();
-
-    /**
-     * Callback for the renderMe() method.
-     *
-     * @var AbstractCallback
-     */
-    protected $callback;
 
     /**
      * Info, if we have "extra" data to render.
@@ -144,60 +108,12 @@ class Model
     protected $isCallback = false;
 
     /**
-     * The connector service, used for source generation.
-     *
-     * @var Connectors
-     */
-    protected $connectorService;
-
-    /**
      * We need to know, if we are rendering the expandable child for the
      * constants. The code generation does special stuff there.
      *
      * @var bool
      */
     protected $isMetaConstants = false;
-
-    /**
-     * Inject the pool and create the connector service.
-     *
-     * @param \Brainworxx\Krexx\Service\Factory\Pool $pool
-     */
-    public function __construct(Pool $pool)
-    {
-        $this->connectorService = $pool->createClass(
-            'Brainworxx\\Krexx\\Analyse\\Code\\Connectors'
-        );
-    }
-
-    /**
-     * Inject the callback for the renderer
-     *
-     * @param AbstractCallback $object
-     *   The callback.
-     *
-     * @return $this
-     *   $this for chaining
-     */
-    public function injectCallback(AbstractCallback $object)
-    {
-        $this->callback = $object;
-        return $this;
-    }
-
-    /**
-     * Triggers the callback (if set).
-     *
-     * @return string
-     */
-    public function renderMe()
-    {
-        if (isset($this->callback)) {
-            $this->callback->setParams($this->parameters);
-            return $this->callback->callMe();
-        }
-        return '';
-    }
 
     /**
      * Setter for the data.
@@ -315,7 +231,6 @@ class Model
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -328,32 +243,6 @@ class Model
     public function getType()
     {
         return $this->additional . $this->type;
-    }
-
-    /**
-     * Setter for the helpid.
-     *
-     * @param string $helpid
-     *   The ID of the help text.
-     *
-     * @return $this
-     *   $this, for chaining.
-     */
-    public function setHelpid($helpid)
-    {
-        $this->helpid = $helpid;
-        return $this;
-    }
-
-    /**
-     * Getter for the help id.
-     *
-     * @return string
-     *   The ID of the help text.
-     */
-    public function getHelpid()
-    {
-        return $this->helpid;
     }
 
     /**
@@ -382,43 +271,6 @@ class Model
     }
 
     /**
-     * We simply add more info to our info json.
-     * Leftover linebreaks will be removed.
-     * If the value is empty, we will remove a possible previous entry to this key.
-     *
-     * @param string $key
-     *   The array key.
-     * @param string $value
-     *   The value we want to set.
-     *
-     * @return $this
-     *   $this for chaining.
-     */
-    public function addToJson($key, $value)
-    {
-        // Remove leftover linebreaks.
-        $value = trim(preg_replace("/\r|\n/", "", $value));
-        if ($value === '') {
-            unset($this->json[$key]);
-        } else {
-            $this->json[$key] = $value;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Getter for json.
-     *
-     * @return array
-     *   More analysis data.
-     */
-    public function getJson()
-    {
-        return $this->json;
-    }
-
-    /**
      * Setter for domid.
      *
      * @param string $domid
@@ -442,23 +294,6 @@ class Model
     public function getDomid()
     {
         return $this->domid;
-    }
-
-    /**
-     * Simply add a parameter for the $closure.
-     *
-     * @param $name
-     *   The name of the parameter.
-     * @param $value
-     *   The value of the parameter, by reference.
-     *
-     * @return $this
-     *   $this, for chaining.
-     */
-    public function addParameter($name, &$value)
-    {
-        $this->parameters[$name] = $value;
-        return $this;
     }
 
     /**
@@ -583,7 +418,6 @@ class Model
     {
         $this->connectorService->setCustomConnector1($string);
         return $this;
-
     }
 
     /**

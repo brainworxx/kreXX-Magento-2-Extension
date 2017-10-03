@@ -55,10 +55,10 @@
         /** @type {Node} */
         var parent = el.parentNode;
 
-        while (parent !== null && typeof parent[matches()] === 'function') {
+        while (parent !== null) {
 
             // Check for classname
-            if (parent[matches()](selector)) {
+            if (kdt.matches(parent, selector)) {
                 result.push(parent);
             }
             // Get the next one.
@@ -66,26 +66,34 @@
         }
         return result;
 
-        // Workaround for several browsers, since matches() is still not really
-        // implemented in IE.
-        function matches() {
-            /** @type {Element} */
-            var el = document.querySelector('body');
-            /** @type {Array.<String>} */
-            var names = [
-                'matches',
-                'msMatchesSelector',
-                'mozMatchesSelector',
-                'oMatchesSelector',
-                'webkitMatchesSelector'
-            ];
-            // We need to iterate them.
-            for (var i = 0; i < names.length; i++) {
-                if (typeof el[names[i]] === 'function') {
-                    return names[i];
-                }
+    };
+
+    /**
+     * X-Browser implementation of the matchesSelector.
+     *
+     * @param {Node} element
+     * @param {string} selector
+     * @return {*}
+     */
+    kdt.matches = function(element, selector) {
+        return (
+            // Normal implementation.
+            element.matches ||
+            // Whatever.
+            element.matchesSelector ||
+            // IE.
+            element.msMatchesSelector ||
+            // Firefox.
+            element.mozMatchesSelector ||
+            // Chrome.
+            element.webkitMatchesSelector ||
+            // Opera.
+            element.oMatchesSelector ||
+            function () {
+                // Fallback to false, this is not the element you are lookking for.
+                return false;
             }
-        }
+        ).call(element, selector);
     };
 
     /**
@@ -202,7 +210,6 @@
      * @param {string} className
      */
     kdt.toggleClass = function (el, className) {
-
         if (el.classList) {
             // Just toggle it.
             el.classList.toggle(className);
@@ -231,12 +238,94 @@
      *
      */
     kdt.addEvent = function (selector, eventName, callBack) {
+        // We use the clickHandler instead.
+        if (eventName === 'click') {
+            kdt.clickHandler.add(selector, callBack);
+        } else {
+            /** @type {NodeList} */
+            var elements = document.querySelectorAll(selector);
+
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].addEventListener(eventName, callBack);
+            }
+        }
+    };
+
+    /**
+     * Click handler for kreXX, to get out of the event-hell.
+     */
+    kdt.clickHandler =  {};
+
+    /**
+     * The storage object, with an array of callbacks behind it.
+     *
+     * @type {{}}
+     */
+    kdt.clickHandler.storage = {};
+
+    /**
+     *
+     * @param {string} selector
+     * @param {function} callback
+     */
+    kdt.clickHandler.add = function(selector, callback) {
+        if (!(selector in kdt.clickHandler.storage)) {
+            kdt.clickHandler.storage[selector] = [];
+        }
+        kdt.clickHandler.storage[selector].push(callback);
+    };
+
+    /**
+     * Registers the eventhandler, prefereably on the kreXX instance window.
+     *
+     * @param selector
+     */
+    kdt.clickHandler.register = function(selector) {
         /** @type {NodeList} */
         var elements = document.querySelectorAll(selector);
 
         for (var i = 0; i < elements.length; i++) {
-            elements[i].addEventListener(eventName, callBack);
+            elements[i].addEventListener('click', kdt.clickHandler.handle);
         }
+    };
+
+    /**
+     * Whenever a click is bubbeled on a kreXX instance, we try to find
+     * the according callback, and sinply call it.
+     *
+     * @param {Event} event
+     */
+    kdt.clickHandler.handle = function(event) {
+        // We stop the event in it's tracks.
+        event.stopPropagation();
+        // event.preventDefault();
+
+        var element = event.target;
+        var finished = false;
+
+        do {
+            // We need to test the element on all selectors.
+            for (var selector in kdt.clickHandler.storage) {
+                if (kdt.matches(element, selector)) {
+                    // Got to call them all.
+                    for (var i = 0; i < kdt.clickHandler.storage[selector].length; i++) {
+                        kdt.clickHandler.storage[selector][i](event, element);
+                    }
+                    // We did what we came for.
+                    // Time to exit the while loop.
+                    finished = true;
+                }
+            }
+
+            if (finished) {
+                // Exit the while.
+                element = null;
+            } else {
+                // Time to test the parent.
+                element = element.parentNode;
+            }
+        } while (element !== null);
+
     };
 
     /**
@@ -253,27 +342,35 @@
         /** @type {string|*} */
         var result;
 
-        if (typeof el !== 'undefined') {
-            result = el.getAttribute('data-' + what);
+        if (typeof el === 'undefined') {
+            // No el, no data!
+            return '';
+        }
 
-            if (result !== null) {
-                if (mustEscape === false) {
-                    return result;
-                } else {
-                    return result.replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;")
-                        .replace(/"/g, "&quot;")
-                        .replace(/'/g, "&#039;")
-                        // <small> is allowed. Parameters are better readable
-                        // this way.
-                        .replace('&lt;small&gt;', '<small>')
-                        .replace('&lt;/small&gt;', '</small>');
-                }
+        if (typeof el.getAttribute !== 'function') {
+            // No attribute, no data!
+            return '';
+        }
+
+        result = el.getAttribute('data-' + what);
+
+        if (result !== null) {
+            if (mustEscape === false) {
+                return result;
+            } else {
+                return result.replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;")
+                    // <small> is allowed. Parameters are better readable
+                    // this way.
+                    .replace('&lt;small&gt;', '<small>')
+                    .replace('&lt;/small&gt;', '</small>');
             }
         }
 
-        // Stille here?!? No data fount, hence an empty string.
+        // Still here?!? No data fount, hence an empty string.
         return '';
     };
 
@@ -554,12 +651,11 @@
      * Resets all values in the local cookie settings.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    kdt.resetSetting = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    kdt.resetSetting = function (event, element) {
 
         // We do not delete the cookie, we simply remove all settings in it.
         /** @type {Object} */
@@ -599,8 +695,11 @@
      * Prevents the bubbeling of en event, nothing more.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    kdt.preventBubble = function (event) {
+    kdt.preventBubble = function (event, element) {
         event.stopPropagation();
     };
 
@@ -651,6 +750,39 @@
             object3[attribute] = object2[attribute];
         }
         return object3;
+    };
+
+    /**
+     * Move the draXX element into the viewport. Should be called onDocumentReady.
+     *
+     * @param {string} selector
+     */
+    kdt.moveToViewport = function (selector) {
+        // Meh, we need to use the timeout to make this work on MS-Edge.
+        // Edge remembers the last scrolling position *after* the onDocumentReady
+        // event. 500 ms should be enough time to do this.
+        setTimeout(function(){
+            // Get the current viewport top value.
+            /** @type {number} */
+            var viewportTop = document.documentElement.scrollTop;
+            // Fallback for Chrome.
+            if (viewportTop === 0 ) {
+                viewportTop = document.body.scrollTop;
+            }
+
+            // Get the elements we need to move
+            /** @type {NodeList} */
+            var elements = document.querySelectorAll(selector);
+            /** @type {number} */
+            var oldOffset = 0;
+
+            for (var i = 0; i < elements.length; i++) {
+                // Get it's old offset.
+                oldOffset = parseInt(elements[i].style.top.slice(0, -2), 10);
+                // Set the new offset.
+                elements[i].style.top = (oldOffset + viewportTop) + 'px';
+            }
+        }, 500);
     };
 
     window.kreXXdomTools = kdt;

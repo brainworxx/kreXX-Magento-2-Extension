@@ -84,7 +84,7 @@ class ThroughMethods extends AbstractCallback
                 ++$key;
                 $paramList .= $methodData['Parameter #' . $key] = $this->pool
                     ->codegenHandler
-                    ->parameterToString($reflectionParameter);
+                    ->parameterToString($reflectionParameter) . ', ';
             }
 
             // Remove the ',' after the last char.
@@ -140,11 +140,10 @@ class ThroughMethods extends AbstractCallback
         if (empty($filename)) {
             return ":: unable to determine declaration ::\n\nMaybe this is a predeclared class?";
         }
-        $result = $filename . "\n";
-        $result .= 'in class: ' . $declaringClass->getName() . "\n";
-        $result .= 'in line: ' . $reflectionMethod->getStartLine();
 
-        return $result;
+        return $filename . "\n" .
+            'in class: ' . $declaringClass->getName() . "\n" .
+            'in line: ' . $reflectionMethod->getStartLine();
     }
 
     /**

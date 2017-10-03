@@ -183,35 +183,35 @@
          *
          * @event change
          */
-        kdt.addEvent('.ksearchcase', 'change', krexx.clearSearch);
+        kdt.addEvent('.ksearchcase', 'change', krexx.performSearch.clearSearch);
 
         /**
          * Clear our search results, because we now have new options.
          *
          * @event change
          */
-        kdt.addEvent('.ksearchkeys', 'change', krexx.clearSearch);
+        kdt.addEvent('.ksearchkeys', 'change', krexx.performSearch.clearSearch);
 
         /**
          * Clear our search results, because we now have new options.
          *
          * @event change
          */
-        kdt.addEvent('.ksearchshort', 'change', krexx.clearSearch);
+        kdt.addEvent('.ksearchshort', 'change', krexx.performSearch.clearSearch);
 
         /**
          * Clear our search results, because we now have new options.
          *
          * @event change
          */
-        kdt.addEvent('.ksearchlong', 'change', krexx.clearSearch);
+        kdt.addEvent('.ksearchlong', 'change', krexx.performSearch.clearSearch);
 
         /**
          * Clear our search results, because we now have new options.
          *
          * @event change
          */
-        kdt.addEvent('.ksearchwhole', 'change', krexx.clearSearch);
+        kdt.addEvent('.ksearchwhole', 'change', krexx.performSearch.clearSearch);
 
         /**
          * Display our search options.
@@ -224,6 +224,12 @@
         if (window.location.protocol === 'file:') {
             krexx.disableForms();
         }
+
+        // Move the output into the viewport. Debugging onepager is so annoying, otherwise.
+        kdt.moveToViewport('.kouterwrapper');
+
+        // Register the click handler on all kreXX instances.
+        kdt.clickHandler.register('.kwrapper.kouterwrapper, .kfatalwrapper-outer');
     };
 
     /**
@@ -232,17 +238,15 @@
      * the recursion.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.copyFrom = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
-
+    krexx.copyFrom = function (event, element) {
         var i;
 
         // Get the DOM id of the original analysis.
-        var domid = kdt.getDataset(this, 'domid');
+        var domid = kdt.getDataset(element, 'domid');
         // Get the analysis data.
         var orgNest = document.querySelector('#' + domid);
 
@@ -251,53 +255,13 @@
             // Get the EL of the data (element with the arrow).
             var orgEl = orgNest.previousElementSibling;
             // Clone the analysis data and insert it after the recursion EL.
-            this.parentNode.insertBefore(orgNest.cloneNode(true), this.nextSibling);
+            element.parentNode.insertBefore(orgNest.cloneNode(true), element.nextSibling);
             // Clone the EL of the analysis data and insert it after the recursion EL.
             var newEl = orgEl.cloneNode(true);
-            this.parentNode.insertBefore(newEl, this.nextSibling);
-            // Register the events on the new element.
-            newEl.addEventListener('click', krexx.toggle);
-
-            // The code generation may not be possible here, so we need to check this.
-            var kgencode = newEl.querySelector('.kgencode');
-            if (kgencode !== null) {
-                kgencode.addEventListener('click', krexx.generateCode);
-            }
-
-            newEl.querySelector('.kolps').addEventListener('click', krexx.collapse);
-
-            // Register the toggle function.
-            var newExpand = newEl.nextElementSibling.querySelectorAll('.kexpand');
-            for (i = 0; i < newExpand.length; i++) {
-                newExpand[i].addEventListener('click', krexx.toggle);
-            }
-            // Register the Collapse function.
-            var hideEverythingElse = newEl.nextElementSibling.querySelectorAll('.kolps');
-            for (i = 0; i < hideEverythingElse.length; i++) {
-                hideEverythingElse[i].addEventListener('click', krexx.collapse);
-            }
-            // Register the Code-Generation function.
-            var codegen = newEl.nextElementSibling.querySelectorAll('.kgencode');
-            for (i = 0; i < codegen.length; i++) {
-                codegen[i].addEventListener('click', krexx.generateCode);
-            }
-            // Register the recursion resolving (this function) on possible recursions
-            var recursions = newEl.nextElementSibling.querySelectorAll('.kwrapper .kcopyFrom');
-            for (i = 0; i < recursions.length; i++) {
-                recursions[i].addEventListener('click', krexx.copyFrom);
-            }
-            // Prevent the event bubbling on the code generation display.
-            var codedisplay = newEl.nextElementSibling.querySelectorAll('.kwrapper .kodsp');
-            for (i = 0; i < codedisplay.length; i++) {
-                codedisplay[i].addEventListener('click', kdt.preventBubble);
-            }
-            codedisplay = newEl.querySelectorAll('.kwrapper .kodsp');
-            for (i = 0; i < codedisplay.length; i++) {
-                codedisplay[i].addEventListener('click', kdt.preventBubble);
-            }
+            element.parentNode.insertBefore(newEl, element.nextSibling);
 
             // Change the key of the just cloned EL to the one from the recursion.
-            kdt.findInDomlistByClass(newEl.children, 'kname').innerHTML = kdt.findInDomlistByClass(this.children, 'kname').innerHTML;
+            kdt.findInDomlistByClass(newEl.children, 'kname').innerHTML = kdt.findInDomlistByClass(element.children, 'kname').innerHTML;
             // We  need to remove the ids from the copy to avoid double ids.
             var allChildren = newEl.nextElementSibling.getElementsByTagName("*");
             for (i = 0; i < allChildren.length; i++) {
@@ -311,7 +275,7 @@
             kdt.setDataset(newEl.parentNode, 'domid', domid);
 
             // Remove the recursion EL.
-            this.parentNode.removeChild(this);
+            element.parentNode.removeChild(element);
         }
 
     };
@@ -324,14 +288,13 @@
      * to the element we want to look at.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.collapse = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    krexx.collapse = function (event, element) {
 
-        var button = event.target;
+        var button = element;
         var wrapper = kdt.getParents(button, '.kwrapper')[0];
 
         // Remove all old classes within this debug "window"
@@ -359,50 +322,45 @@
         }
     };
 
-    /**
-     * Here we save the search results
-     *
-     * This is multidimensional array:
-     * results[kreXX-instance][search text][search results]
-     *                                     [pointer]
-     * The [pointer] is the key of the [search result] where
-     * you would jump to when you click "next"
-     */
-    var results = [];
-
-    /**
+     /**
      * Initiates the search.
      *
      * The results are saved in the var results.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.performSearch = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    krexx.performSearch = function (event, element) {
 
         // Hide the search options.
-        kdt.addClass([this.parentNode.nextElementSibling], 'khidden');
+        kdt.addClass([element.parentNode.nextElementSibling], 'khidden');
 
         // Stitching together our configuration.
-        var searchtext = this.parentNode.querySelector('.ksearchfield').value;
-        var caseSensitive = this.parentNode.parentNode.querySelector('.ksearchcase').checked;
-        var searchKeys = this.parentNode.parentNode.querySelector('.ksearchkeys').checked;
-        var searchShort = this.parentNode.parentNode.querySelector('.ksearchshort').checked;
-        var searchLong = this.parentNode.parentNode.querySelector('.ksearchlong').checked;
-        var searchWhole = this.parentNode.parentNode.querySelector('.ksearchwhole').checked;
+        var searchtext = element.parentNode.querySelector('.ksearchfield').value;
+        var caseSensitive = element.parentNode.parentNode.querySelector('.ksearchcase').checked;
+        var searchKeys = element.parentNode.parentNode.querySelector('.ksearchkeys').checked;
+        var searchShort = element.parentNode.parentNode.querySelector('.ksearchshort').checked;
+        var searchLong = element.parentNode.parentNode.querySelector('.ksearchlong').checked;
+        var searchWhole = element.parentNode.parentNode.querySelector('.ksearchwhole').checked;
 
-        // Appy our configuration.
+        // Apply our configuration.
         if (caseSensitive === false) {
             searchtext = searchtext.toLowerCase();
         }
 
-        // we only search for more than 3 chars.
+        // Nothing to search for.
+        if (searchtext.length === 0) {
+            // Not enough chars as a searchtext!
+            element.parentNode.querySelector('.ksearch-state').textContent = '<- Please enter a search text.';
+            return
+        }
+
+        // We only search for more than 3 chars.
         if (searchtext.length > 2 || searchWhole) {
-            var instance = kdt.getDataset(this, 'instance');
-            var direction = kdt.getDataset(this, 'direction');
+            var instance = kdt.getDataset(element, 'instance');
+            var direction = kdt.getDataset(element, 'direction');
             var payload = document.querySelector('#' + instance + ' .kbg-wrapper');
 
             // We need to un-collapse everything, in case it it collapsed.
@@ -412,45 +370,44 @@
             }
 
             // Are we already having some results?
-            if (typeof results[instance] !== "undefined") {
-                if (typeof results[instance][searchtext] === "undefined") {
+            if (typeof krexx.performSearch.results[instance] !== "undefined") {
+                if (typeof krexx.performSearch.results[instance][searchtext] === "undefined") {
                     refreshResultlist();
                 }
-            }
-            else {
+            } else {
                 refreshResultlist();
             }
 
             // Set the pointer to the next or previous element
             if (direction === 'forward') {
-                results[instance][searchtext]['pointer']++;
+                krexx.performSearch.results[instance][searchtext]['pointer']++;
             }
             else {
-                results[instance][searchtext]['pointer']--;
+                krexx.performSearch.results[instance][searchtext]['pointer']--;
             }
 
             // Do we have an element?
-            if (typeof results[instance][searchtext]['data'][results[instance][searchtext]['pointer']] === "undefined") {
+            if (typeof krexx.performSearch.results[instance][searchtext]['data'][krexx.performSearch.results[instance][searchtext]['pointer']] === "undefined") {
                 if (direction === 'forward') {
                     // There is no next element, we go back to the first one.
-                    results[instance][searchtext]['pointer'] = 0;
+                    krexx.performSearch.results[instance][searchtext]['pointer'] = 0;
                 }
                 else {
-                    results[instance][searchtext]['pointer'] = results[instance][searchtext]['data'].length - 1;
+                    krexx.performSearch.results[instance][searchtext]['pointer'] = krexx.performSearch.results[instance][searchtext]['data'].length - 1;
                 }
             }
 
             // Feedback about where we are
-            this.parentNode.querySelector('.ksearch-state').textContent = (results[instance][searchtext]['pointer'] + 1) + ' / ' + (results[instance][searchtext]['data'].length);
+            element.parentNode.querySelector('.ksearch-state').textContent = (krexx.performSearch.results[instance][searchtext]['pointer'] + 1) + ' / ' + (krexx.performSearch.results[instance][searchtext]['data'].length);
             // Now we simply jump to the element in the array.
-            if (typeof results[instance][searchtext]['data'][results[instance][searchtext]['pointer']] !== 'undefined') {
+            if (typeof krexx.performSearch.results[instance][searchtext]['data'][krexx.performSearch.results[instance][searchtext]['pointer']] !== 'undefined') {
                 // We got another one!
-                krexx.jumpTo(results[instance][searchtext]['data'][results[instance][searchtext]['pointer']]);
+                krexx.jumpTo(krexx.performSearch.results[instance][searchtext]['data'][krexx.performSearch.results[instance][searchtext]['pointer']]);
             }
         }
         else {
             // Not enough chars as a searchtext!
-            this.parentNode.querySelector('.ksearch-state').textContent = '<- must be bigger than 3 characters';
+            element.parentNode.querySelector('.ksearch-state').textContent = '<- must be bigger than 3 characters';
         }
 
         /**
@@ -460,10 +417,7 @@
             // Remove all previous highlights
             kdt.removeClass('.ksearch-found-highlight', 'ksearch-found-highlight');
 
-            // Appy our configuration
-            if (caseSensitive === false) {
-                searchtext = searchtext.toLowerCase();
-            }
+            // Apply our configuration.
             var selector = [];
             if (searchKeys === true) {
                 selector.push('li.kchild span.kname');
@@ -476,12 +430,17 @@
             }
 
             // Get a new list of elements
-            results[instance] = [];
-            results[instance][searchtext] = [];
-            results[instance][searchtext]['data'] = [];
+            krexx.performSearch.results[instance] = [];
+            krexx.performSearch.results[instance][searchtext] = [];
+            krexx.performSearch.results[instance][searchtext]['data'] = [];
+            krexx.performSearch.results[instance][searchtext]['pointer'] = [];
 
             // Poll out payload for elements to search
-            var list = payload.querySelectorAll(selector.join(', '));
+            var list = [];
+            if (selector.length > 0) {
+                list = payload.querySelectorAll(selector.join(', '));
+            }
+
             var textContent = '';
             for (var i = 0; i < list.length; ++i) {
                 // Does it contain our search string?
@@ -492,41 +451,51 @@
                 if (searchWhole) {
                     if (textContent === searchtext) {
                         kdt.toggleClass(list[i], 'ksearch-found-highlight');
-                        results[instance][searchtext]['data'].push(list[i]);
+                        krexx.performSearch.results[instance][searchtext]['data'].push(list[i]);
                     }
                 } else {
                     if (textContent.indexOf(searchtext) > -1) {
                         kdt.toggleClass(list[i], 'ksearch-found-highlight');
-                        results[instance][searchtext]['data'].push(list[i]);
+                        krexx.performSearch.results[instance][searchtext]['data'].push(list[i]);
                     }
                 }
-
             }
             // Reset our index.
-            results[instance][searchtext]['pointer'] = -1;
+            krexx.performSearch.results[instance][searchtext]['pointer'] = -1;
         }
-
     };
+
+    /**
+     * Here we save the search results
+     *
+     * This is multidimensional array:
+     * results[kreXX-instance][search text][search results]
+     *                                     [pointer]
+     * The [pointer] is the key of the [search result] where
+     * you would jump to when you click "next"
+     *
+     */
+    krexx.performSearch.results = [];
 
     /**
      * Reset the searchresults, because we now have new search options.
      */
-    krexx.clearSearch = function () {
-        results = [];
+    krexx.performSearch.clearSearch = function () {
+        // Wipe our instance data, nothing more
+        krexx.performSearch.results[kdt.getDataset(this, 'instance')] = [];
     };
 
     /**
      * Display the search dialog
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.displaySearch = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    krexx.displaySearch = function (event, element) {
 
-        var instance = kdt.getDataset(this, 'instance');
+        var instance = kdt.getDataset(element, 'instance');
         var search = document.querySelector('#search-' + instance);
 
         // Toggle display / hidden.
@@ -542,7 +511,7 @@
             kdt.removeClass('.ksearch-found-highlight', 'ksearch-found-highlight');
             search.style.position = 'fixed';
             // Clear the results.
-            results = [];
+           krexx.performSearch.results = [];
         }
     };
 
@@ -550,31 +519,26 @@
      * Toggle the display of the search options.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.displaySearchOptions = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
-
+    krexx.displaySearchOptions = function (event, element) {
         // Get the options and switch the display class.
-        kdt.toggleClass(this.parentNode.nextElementSibling, 'khidden');
+        kdt.toggleClass(element.parentNode.nextElementSibling, 'khidden');
     };
 
     /**
      * Hides or displays the nest under an expandable element.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.toggle = function (event) {
-        // Prevents the default event behavior (ie: click).
-        // event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
-
-        kdt.toggleClass(this, 'kopened');
-        kdt.toggleClass(this.nextElementSibling, 'khidden');
-
+    krexx.toggle = function (event, element) {
+        kdt.toggleClass(element, 'kopened');
+        kdt.toggleClass(element.nextElementSibling, 'khidden');
     };
 
     /**
@@ -651,15 +615,13 @@
      * Shows a "fast" closing animation and then removes the krexx window from the markup.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.close = function (event) {
+    krexx.close = function (event, element) {
 
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
-
-        var instance = kdt.getDataset(event.target, 'instance');
+        var instance = kdt.getDataset(element, 'instance');
         var elInstance = document.querySelector('#' + instance);
 
         // Remove it nice and "slow".
@@ -694,14 +656,13 @@
      * The kreXX code generator.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.generateCode = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    krexx.generateCode = function (event, element) {
 
-        var codedisplay = event.target.nextElementSibling;
+        var codedisplay = element.nextElementSibling;
         var resultArray = [];
         var resultString = '';
         var sourcedata;
@@ -710,7 +671,7 @@
         var wrapper2 = '';
 
         // Get the first element
-        var el = kdt.getParents(event.target, 'li.kchild')[0];
+        var el = kdt.getParents(element, 'li.kchild')[0];
 
         // Start the loop to collect all the date
         while (el) {
@@ -782,24 +743,23 @@
      * Sets the kactive on the clicked element and removes it from the others.
      *
      * @param {Event} event
+     *   The click event.
+     * @param {Node} element
+     *   The element that was clicked.
      */
-    krexx.switchTab = function (event) {
-        // Prevents the default event behavior (ie: click).
-        event.preventDefault();
-        // Prevents the event from propagating (ie: "bubbling").
-        event.stopPropagation();
+    krexx.switchTab = function (event, element) {
 
-        var instance = kdt.getDataset(this.parentNode, 'instance');
-        var what = kdt.getDataset(this, 'what');
+        var instance = kdt.getDataset(element.parentNode, 'instance');
+        var what = kdt.getDataset(element, 'what');
 
         // Toggle the highlighting.
         kdt.removeClass('#' + instance + ' .kactive:not(.ksearchbutton)', 'kactive');
 
-        if (this.classList) {
-            this.classList.add('kactive');
+        if (element.classList) {
+            element.classList.add('kactive');
         }
         else {
-            this.className += ' kactive';
+            element.className += ' kactive';
         }
 
         // Toggle what is displayed
