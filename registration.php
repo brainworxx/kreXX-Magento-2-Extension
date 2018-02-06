@@ -1,4 +1,6 @@
 <?php
+
+use Brainworxx\Krexx\Service\Overwrites;
 /**
  * kreXX: Krumo eXXtended
  *
@@ -38,20 +40,5 @@
     __DIR__
 );
 
-// Register the overwrites for Magento
-if (!isset($GLOBALS['kreXXoverwrites'])) {
-    $GLOBALS['kreXXoverwrites'] = array();
-}
-$GLOBALS['kreXXoverwrites']['classes'] = array(
-    // Special getter analysis for the dynamic getters of the data object.
-    'Brainworxx\\Krexx\\Analyse\\Callback\\Iterate\\ThroughGetter' => 'Brainworxx\\M2krexx\\Overwrites\\Dynamicgetter',
-    // Fewer debug methods to prevent an output overkill.
-    'Brainworxx\\Krexx\\Service\\Config\\Config' => 'Brainworxx\\M2krexx\\Overwrites\\Config',
-);
-
-// This should trigger the autoloader.
-// If not, we will use the bundeled version
-// @todo Do we really need to bundle kreXX ?!?
-if (!class_exists('Krexx')) {
-    include 'krexx/Krexx.php';
-}
+\Brainworxx\Krexx\Service\Overwrites::$classes['Brainworxx\\Krexx\\Analyse\\Callback\\Iterate\\ThroughGetter'] = 'Brainworxx\\M2krexx\\Overwrites\\Dynamicgetter';
+//\Brainworxx\Krexx\Service\Overwrites::$classes['Brainworxx\\Krexx\\Service\\Config\\Config'] = 'Brainworxx\\M2krexx\\Overwrites\\Config';
