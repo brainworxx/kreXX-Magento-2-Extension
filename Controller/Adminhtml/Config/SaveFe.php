@@ -40,6 +40,7 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\UrlInterface;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class SaveFe extends Action
 {
@@ -118,7 +119,7 @@ class SaveFe extends Action
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
 
         parent::__construct($context);
-
+        Pool::createPool();
     }
 
     /**
