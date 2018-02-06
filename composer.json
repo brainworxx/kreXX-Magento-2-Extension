@@ -6,8 +6,7 @@
   "license": ["LGPL-2.1"],
   "autoload": {
     "files": [
-      ["registration.php"],
-      ["krexx/Krexx.php"]
+      ["registration.php"]
     ],
     "psr-4": {
       "Brainworxx\\M2krexx\\": ""
