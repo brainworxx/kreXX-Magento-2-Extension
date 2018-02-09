@@ -78,6 +78,7 @@ class Edit extends Template
         $help['memoryLeft'] = $this->prepareHelp($pool->messages->getHelp('memoryLeft'));
         $help['maxRuntime'] = $this->prepareHelp($pool->messages->getHelp('maxRuntime'));
         $help['maxStepNumber'] = $this->prepareHelp($pool->messages->getHelp('maxStepNumber'));
+        $help['arrayCountLimit'] = $this->prepareHelp($pool->messages->getHelp('arrayCountLimit'));
 
         $this->assign('help', $help);
 
@@ -159,10 +160,6 @@ class Edit extends Template
             'methods',
             'analysePrivateMethods'
         );
-        $settings['backtraceAndError']['registerAutomatically'] = $pool->config->iniConfig->getConfigFromFile(
-            'backtraceAndError',
-            'registerAutomatically'
-        );
         $settings['methods']['analyseGetter'] = $pool->config->iniConfig->getConfigFromFile(
             'methods',
             'analyseGetter'
@@ -179,9 +176,13 @@ class Edit extends Template
             'runtime',
             'maxRuntime'
         );
-        $settings['backtraceAndError']['maxStepNumber'] = $pool->config->iniConfig->getConfigFromFile(
-            'backtraceAndError',
+        $settings['pruneOutput']['maxStepNumber'] = $pool->config->iniConfig->getConfigFromFile(
+            'pruneOutput',
             'maxStepNumber'
+        );
+        $settings['pruneOutput']['arrayCountLimit'] = $pool->config->iniConfig->getConfigFromFile(
+            'pruneOutput',
+            'arrayCountLimit'
         );
 
         // Are these actually set?

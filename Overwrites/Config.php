@@ -75,9 +75,9 @@ class Config extends \Brainworxx\Krexx\Service\Config\Config
             'analyseGetter' => 'true',
             'debugMethods' => '__toArray,toString',
         ),
-        'backtraceAndError' => array(
-            'registerAutomatically' => 'false',
+        'pruneOutput' => array(
             'maxStepNumber' => 10,
+            'arrayCountLimit' => 300,
         ),
     );
 }

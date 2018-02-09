@@ -72,6 +72,7 @@ class SaveEdit extends Action
         'useScopeAnalysis',
         'analyseGetter',
         'maxStepNumber',
+        'arrayCountLimit',
     );
 
     /**
@@ -84,7 +85,7 @@ class SaveEdit extends Action
         'output',
         'properties',
         'methods',
-        'backtraceAndError',
+        'pruneOutput',
     );
 
     /**
@@ -137,7 +138,7 @@ class SaveEdit extends Action
         $all_ok = true;
         $pool = \Krexx::$pool;
 
-        $filepath = $pool->krexxDir . 'config/Krexx.ini';
+        $filepath = KREXX_DIR . 'config/Krexx.ini';
         // We must preserve the section 'feEditing'.
         // Everything else will be overwritten.
         if ($this->ioFile->fileExists($filepath)) {

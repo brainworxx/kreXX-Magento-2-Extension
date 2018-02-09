@@ -68,6 +68,7 @@ class SaveFe extends Action
         'useScopeAnalysis',
         'analyseGetter',
         'maxStepNumber',
+        'arrayCountLimit',
     );
 
     /**
@@ -80,7 +81,7 @@ class SaveFe extends Action
         'output',
         'properties',
         'methods',
-        'backtraceAndError',
+        'pruneOutput',
     );
 
     /**
@@ -132,7 +133,7 @@ class SaveFe extends Action
         $arguments = $this->getRequest()->getParams();
         $all_ok = true;
         $pool = \Krexx::$pool;
-        $filepath = $pool->krexxDir . 'config/Krexx.ini';
+        $filepath = KREXX_DIR . 'config/Krexx.ini';
 
         // Whitelist of the vales we are accepting.
         $allowed_values = array('full', 'display', 'none');

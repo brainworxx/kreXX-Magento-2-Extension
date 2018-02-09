@@ -43,6 +43,7 @@ use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Filesystem\File\ReadFactory;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class View extends Action
 {
@@ -93,7 +94,8 @@ class View extends Action
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
         $this->resultRedirect = $objectManager->get(Redirect::class);
         $this->fileReadFactory = $objectManager->get(ReadFactory::class);
-
+        Pool::createPool();
+        
         parent::__construct($context);
 
     }

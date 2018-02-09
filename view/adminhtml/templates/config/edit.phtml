@@ -564,36 +564,9 @@
 
             <tbody>
             <tr class="even">
-                <td>
-                    <span><?php echo __('Register fatal error handler automatically:'); ?></span>
-                </td>
-                <td>
-                    <select name="backtraceAndError[registerAutomatically]" id="registerAutomatically" class="select admin__control-select">
-                        <?php foreach ($this->getSelectBool() as $key => $value) {
-                            if ($value == $settings['backtraceAndError']['registerAutomatically']) {
-                                $selected = 'selected="selected"';
-                            } else {
-                                $selected = '';
-                            } ?>
-                            <option value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
-                        <?php } ?>
-                    </select>
-                    <label for="registerAutomatically"></label>
-                    <div class="tooltip">
-                        <div class="help">
-                            <span title="<?php echo $help['registerAutomatically']; ?>"></span>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <input id="factory.registerAutomatically" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['registerAutomatically']; ?>/>
-                    <label for="factory.registerAutomatically"></label>
-                </td>
-            </tr>
-            <tr>
                 <td><span><?php echo __('Maximum count of steps in the backtrace:'); ?></span></td>
                 <td>
-                    <input type="text" class="admin__control-text" value="<?php echo $settings['backtraceAndError']['maxStepNumber']; ?>" name="backtraceAndError[maxStepNumber]" id="maxStepNumber">
+                    <input type="text" class="admin__control-text" value="<?php echo $settings['pruneOutput']['maxStepNumber']; ?>" name="pruneOutput[maxStepNumber]" id="maxStepNumber">
                     <label for="maxStepNumber"></label>
                     <div class="tooltip">
                         <div class="help">
@@ -604,6 +577,22 @@
                 <td>
                     <input id="factory.maxStepNumber" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['maxStepNumber']; ?>/>
                     <label for="factory.maxStepNumber"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Maximum array size before fallback to simplified analysis:'); ?></span></td>
+                <td>
+                    <input type="text" class="admin__control-text" value="<?php echo $settings['pruneOutput']['arrayCountLimit']; ?>" name="pruneOutput[arrayCountLimit]" id="arrayCountLimit">
+                    <label for="arrayCountLimit"></label>
+                    <div class="tooltip">
+                        <div class="help">
+                            <span title="<?php echo $help['arrayCountLimit']; ?>"></span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <input id="factory.arrayCountLimit" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['arrayCountLimit']; ?>/>
+                    <label for="factory.arrayCountLimit"></label>
                 </td>
             </tr>
             </tbody>

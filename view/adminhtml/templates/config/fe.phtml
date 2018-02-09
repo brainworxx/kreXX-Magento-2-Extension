@@ -448,32 +448,11 @@
             </thead>
             <tbody>
             <tr class="even">
-                <td><span><?php echo __('Register fatal error handler automatically:'); ?></span></td>
-                <td>
-                    <select name="backtraceAndError[registerAutomatically]" id="registerAutomatically" class="select admin__control-select">
-                        <?php foreach ($data['settings'] as $key => $value) {
-                            if ($key == $settings['backtraceAndError']['registerAutomatically']) {
-                                $selected = 'selected="selected"';
-                            } else {
-                                $selected = '';
-                            } ?>
-                            <option
-                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
-                        <?php } ?>
-                    </select>
-                    <label for="registerAutomatically"></label>
-                </td>
-                <td>
-                    <input id="factory.registerAutomatically" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['registerAutomatically']; ?>/>
-                    <label for="factory.registerAutomatically"></label>
-                </td>
-            </tr>
-            <tr>
                 <td><span><?php echo __('Maximum count of steps in the backtrace:'); ?></span></td>
                 <td>
-                    <select name="backtraceAndError[maxStepNumber]" id="maxStepNumber" class="select admin__control-select">
+                    <select name="pruneOutput[maxStepNumber]" id="maxStepNumber" class="select admin__control-select">
                         <?php foreach ($data['settings'] as $key => $value) {
-                            if ($key == $settings['backtraceAndError']['maxStepNumber']) {
+                            if ($key == $settings['pruneOutput']['maxStepNumber']) {
                                 $selected = 'selected="selected"';
                             } else {
                                 $selected = '';
@@ -487,6 +466,27 @@
                  <td>
                     <input id="factory.maxStepNumber" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['maxStepNumber']; ?>/>
                     <label for="factory.maxStepNumber"></label>
+                </td>
+            </tr>
+            <tr>
+                <td><span><?php echo __('Maximum array size before fallback to simplified analysis:'); ?></span></td>
+                <td>
+                    <select name="pruneOutput[arrayCountLimit]" id="arrayCountLimit" class="select admin__control-select">
+                        <?php foreach ($data['settings'] as $key => $value) {
+                            if ($key == $settings['pruneOutput']['arrayCountLimit']) {
+                                $selected = 'selected="selected"';
+                            } else {
+                                $selected = '';
+                            } ?>
+                            <option
+                                value="<?php echo $key; ?>" <?php echo $selected; ?> ><?php echo $value; ?></option>
+                        <?php } ?>
+                    </select>
+                    <label for="arrayCountLimit"></label>
+                </td>
+                 <td>
+                    <input id="factory.arrayCountLimit" class="admin__control-checkbox" type="checkbox" value="1" name="factory" <?php echo $factory['arrayCountLimit']; ?>/>
+                    <label for="factory.arrayCountLimit"></label>
                 </td>
             </tr>
             </tbody>

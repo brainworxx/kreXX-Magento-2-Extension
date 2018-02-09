@@ -38,6 +38,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\ObjectManager;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class Index extends Action
 {
@@ -65,6 +66,7 @@ class Index extends Action
 
         // Has kreXX something to say? Maybe a writeprotected logfolder?
         // We are only facing error messages here, normally.
+        Pool::createPool();
         $messages = strip_tags(\Krexx::$pool->messages->outputMessages());
         if (!empty($messages)) {
             $this->messageManager->addError($messages);

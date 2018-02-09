@@ -99,11 +99,11 @@ class Fe extends Template
         $settings['methods']['analysePrivateMethods'] = $this->convertKrexxFeSetting(
             $pool->config->iniConfig->getFeConfigFromFile('analysePrivateMethods')
         );
-        $settings['backtraceAndError']['registerAutomatically'] = $this->convertKrexxFeSetting(
-            $pool->config->iniConfig->getFeConfigFromFile('registerAutomatically')
-        );
-        $settings['backtraceAndError']['maxStepNumber'] = $this->convertKrexxFeSetting(
+        $settings['pruneOutput']['maxStepNumber'] = $this->convertKrexxFeSetting(
             $pool->config->iniConfig->getFeConfigFromFile('maxStepNumber')
+        );
+        $settings['pruneOutput']['arrayCountLimit'] = $this->convertKrexxFeSetting(
+            $pool->config->iniConfig->getFeConfigFromFile('arrayCountLimit')
         );
         $settings['runtime']['memoryLeft'] = $this->convertKrexxFeSetting(
             $pool->config->iniConfig->getFeConfigFromFile('memoryLeft')

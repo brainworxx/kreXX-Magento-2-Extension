@@ -40,6 +40,7 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\UrlInterface;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class Delete extends Action
 {
@@ -72,6 +73,7 @@ class Delete extends Action
         $this->resultRedirect = $objectManager->get(Redirect::class);
         $this->ioFile = $objectManager->get(File::class);
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
+        Pool::createPool();
 
         parent::__construct($context);
 
