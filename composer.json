@@ -2,8 +2,12 @@
   "name": "brainworxx/m2krexx",
   "type": "magento2-module",
   "description": "kreXX is a php debugger with a fatal error handler. It displays debug information about objects and variables in it's own draggable output.",
-  "version": "2.2.1 dev",
-  "license": ["LGPL-2.1"],
+  "version": "2.4.0 dev",
+  "license": ["LGPL-2.1-or-later"],
+  "require": {
+    "php": ">=5.5.0",
+	"brainworxx/krexx": "2.4.0"
+  },
   "autoload": {
     "files": [
       ["registration.php"]
