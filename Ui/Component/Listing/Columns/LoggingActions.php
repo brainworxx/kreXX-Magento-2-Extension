@@ -40,6 +40,7 @@ use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\App\ObjectManager;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class LoggingActions extends Column
 {
@@ -62,6 +63,7 @@ class LoggingActions extends Column
     ) {
         $objectManager = ObjectManager::getInstance();
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
+        Pool::createPool();
 
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }

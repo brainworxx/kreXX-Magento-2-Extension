@@ -40,6 +40,7 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\UrlInterface;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class Data extends AbstractHelper
 {
@@ -72,6 +73,7 @@ class Data extends AbstractHelper
         $this->urlBuilder = $objectManager->get(UrlInterface::class);
         $this->fileIo = $objectManager->get(File::class);
         $this->escaper = $objectManager->create(Escaper::class);
+        Pool::createPool();
 
         parent::__construct($context);
     }

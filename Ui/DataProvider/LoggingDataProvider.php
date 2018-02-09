@@ -37,6 +37,7 @@ namespace Brainworxx\M2krexx\Ui\DataProvider;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Brainworxx\M2krexx\Model\Logging\CollectionFactory;
 use Magento\Framework\App\ObjectManager;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 /**
  * Class ProductDataProvider
@@ -77,6 +78,7 @@ class LoggingDataProvider extends AbstractDataProvider
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+        Pool::createPool();
         $this->collection = ObjectManager::getInstance()->get(CollectionFactory::class)->create();
     }
 

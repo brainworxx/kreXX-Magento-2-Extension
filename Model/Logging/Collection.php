@@ -38,6 +38,7 @@ use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Brainworxx\M2krexx\Helper\Data;
 use Magento\Framework\Data\Collection\Filesystem;
 use Magento\Framework\App\ObjectManager;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 class Collection extends Filesystem
 {
@@ -54,6 +55,8 @@ class Collection extends Filesystem
 
         /** @var string $logDirectory */
         $logDirectory = \Krexx::$pool->config->getLogDir();
+
+        Pool::createPool();
 
         $this
             // We only want to parse the log dir, and nothing else.

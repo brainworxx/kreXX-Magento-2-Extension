@@ -35,6 +35,7 @@
 namespace Brainworxx\M2krexx\Block\Adminhtml\Config;
 
 use Magento\Backend\Block\Template;
+use Brainworxx\Krexx\Service\Factory\Pool;
 
 /**
  * Add the form data for the cofig file editor to the template.
@@ -53,6 +54,7 @@ class Edit extends Template
         $help = array();
         $settings = array();
         $factory = array();
+        Pool::createPool();
         $pool = \Krexx::$pool;
 
         // Initialzing help data for the template.
