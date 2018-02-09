@@ -34,7 +34,7 @@
 
 namespace Brainworxx\M2krexx\Controller\Adminhtml\Logging;
 
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\ObjectManager;
@@ -57,7 +57,7 @@ class Index extends Action
     /**
      * Constructor
      *
-     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Backend\App\Action\Context $context
      */
     public function __construct(Context $context)
     {
