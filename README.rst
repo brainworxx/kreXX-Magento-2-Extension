@@ -8,3 +8,7 @@ Current status: experimental.
 
 
 Do **not** use in production (or anywhere else)!
+
+| But, if you feel adventurous:
+| We unbundeled the kreXX lib.
+| Use ``composer require brainworxx/krexx:2.4.0`` to install it.
