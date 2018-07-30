@@ -67,7 +67,11 @@ class Dynamicgetter extends ThroughGetter
                 return '';
             };
 
-            $key = 'get' . preg_replace_callback('/(?:^|_)(.?)/', $callback, $key);
+            $key = 'get' . str_replace(
+                '_',
+                '',
+                preg_replace_callback('/(?:^|_)(.?)/', $callback, $key)
+            );
 
             // Prepare the model.
             /** @var \Brainworxx\Krexx\Analyse\Model $model */
